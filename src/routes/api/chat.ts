@@ -102,7 +102,7 @@ export const Route = createFileRoute("/api/chat")({
         const result = streamText({
           model,
           system: SYSTEM_PROMPT,
-          messages: convertToModelMessages(body.messages),
+          messages: await convertToModelMessages(body.messages),
           stopWhen: stepCountIs(50),
           tools: {
             generateMealImage: tool({
