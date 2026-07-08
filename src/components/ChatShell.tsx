@@ -96,9 +96,8 @@ export function ChatShell({
     });
   }, [messages, initialMessages.length, rename, threadId, qc]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const value = input.trim();
+  const handleSubmit = async (message: { text?: string }) => {
+    const value = (message.text ?? input).trim();
     if (!value || status === "streaming" || status === "submitted") return;
     setInput("");
     await sendMessage({ text: value });
