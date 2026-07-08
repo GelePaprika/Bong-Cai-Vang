@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiGenerateMealImageRouteImport } from './routes/api/generate-meal-image'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,36 +37,47 @@ const ApiChatRoute = ApiChatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/api/chat': typeof ApiChatRoute
   '/api/generate-meal-image': typeof ApiGenerateMealImageRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/api/chat': typeof ApiChatRoute
   '/api/generate-meal-image': typeof ApiGenerateMealImageRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/api/chat': typeof ApiChatRoute
   '/api/generate-meal-image': typeof ApiGenerateMealImageRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/chat' | '/api/generate-meal-image'
+  fullPaths: '/' | '/auth' | '/api/chat' | '/api/generate-meal-image'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/chat' | '/api/generate-meal-image'
-  id: '__root__' | '/' | '/api/chat' | '/api/generate-meal-image'
+  to: '/' | '/auth' | '/api/chat' | '/api/generate-meal-image'
+  id: '__root__' | '/' | '/auth' | '/api/chat' | '/api/generate-meal-image'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiGenerateMealImageRoute: typeof ApiGenerateMealImageRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
   ApiChatRoute: ApiChatRoute,
   ApiGenerateMealImageRoute: ApiGenerateMealImageRoute,
 }
