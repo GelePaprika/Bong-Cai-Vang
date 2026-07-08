@@ -59,6 +59,5 @@ export const getThreadMessages = createServerFn({ method: "GET" })
       .eq("thread_id", data.threadId)
       .order("created_at", { ascending: true });
     if (error) throw new Error(error.message);
-    type Row = { id: string; role: string; parts: unknown };
-    return JSON.parse(JSON.stringify(rows ?? [])) as Row[];
+    return JSON.stringify(rows ?? []);
   });
