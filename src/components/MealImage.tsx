@@ -14,7 +14,6 @@ export function MealImage({ dishName, prompt }: { dishName: string; prompt: stri
     if (started.current) return;
     if (cache.has(prompt)) return;
     started.current = true;
-    const controller = new AbortController();
     streamImage(
       "/api/generate-meal-image",
       prompt,
@@ -25,10 +24,9 @@ export function MealImage({ dishName, prompt }: { dishName: string; prompt: stri
           cache.set(prompt, dataUrl);
         }
       },
-      controller.signal,
     ).catch((err) => setError(err instanceof Error ? err.message : "Image failed"));
-    return () => controller.abort();
   }, [prompt]);
+
 
   return (
     <figure className="overflow-hidden rounded-2xl border border-border bg-muted">
