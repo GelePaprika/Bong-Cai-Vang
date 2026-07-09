@@ -26,17 +26,17 @@ function Landing() {
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-10 md:grid-cols-2 md:py-16">
         <div>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-            <Sparkles className="h-3.5 w-3.5" /> Your kitchen sidekick
+            <Sparkles className="h-3.5 w-3.5" /> Mẹ's kitchen helper
           </span>
           <h1 className="mt-4 text-4xl leading-[1.05] md:text-6xl">
-            Tonight's dinner,
+            Bữa cơm gia đình,
             <br />
-            <span className="text-[color:var(--chili)]">already planned.</span>
+            <span className="text-[color:var(--chili)]">planned with love.</span>
           </h1>
           <p className="mt-5 max-w-md text-base text-muted-foreground md:text-lg">
-            Bông Cải Vàng is your warm AI chef for Vietnamese, Asian and Italian family dinners.
-            Tell it what's in your fridge — get a delicious menu, a photo for every dish, and a
-            tidy grocery list for what's missing.
+            Bông Cải Vàng is your warm AI kitchen companion for Vietnamese family dinners.
+            Tell me what's in your fridge — I'll build a wholesome menu, a photo for every
+            dish, and a grocery list for whatever you need to bring home.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <Link
@@ -58,7 +58,7 @@ function Landing() {
           <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-primary/30 to-[color:var(--basil)]/20 blur-2xl" />
           <img
             src={hero}
-            alt="A Vietnamese family dinner spread"
+            alt="A Vietnamese family gathered around a wooden table sharing a home-cooked dinner with cơm trắng, canh chua cá lóc, thịt kho tộ, rau muống xào tỏi, and cá chiên xả ớt"
             width={1536}
             height={1024}
             className="rounded-3xl border border-border shadow-xl"
@@ -69,20 +69,21 @@ function Landing() {
       <section id="features" className="mx-auto grid max-w-6xl gap-5 px-6 pb-20 md:grid-cols-3">
         <Feature
           icon={<Leaf className="h-5 w-5" />}
-          title="From your fridge, not the store"
-          body="Type the ingredients you already have. Bông Cải Vàng builds menus around them and only shops for what's missing."
+          title="Cook from your fridge"
+          body="Type the ingredients you already have — gà, cá, rau muống, tỏi, nước mắm — and I'll build a menu around them."
         />
         <Feature
           icon={<Globe2 className="h-5 w-5" />}
           title="Vietnamese, Dutch or English"
-          body="Chat in your language. Vietnamese dish names stay in Vietnamese — Canh chua cá, phở gà, thịt kho — with a friendly translation."
+          body="Chat in your language. Dish names stay true to Vietnamese — canh chua cá lóc, rau muống xào tỏi, thịt kho tộ — with a friendly translation."
         />
         <Feature
           icon={<ShoppingBasket className="h-5 w-5" />}
-          title="Photo + recipe + grocery list"
-          body="Every dish comes with a real photo, a short recipe, and a leftover tip so nothing in the fridge goes to waste."
+          title="Photo + recipe + shopping list"
+          body="Every meal comes with a vivid photo, a short recipe, and a categorized shopping list so nothing in the fridge goes to waste."
         />
       </section>
+
 
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6 text-xs text-muted-foreground">
