@@ -1,7 +1,19 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState } from "react";
 import logo from "@/assets/logo.png";
 import hero from "@/assets/hero.jpg";
-import { Sparkles, Leaf, ShoppingBasket, Globe2 } from "lucide-react";
+import { Sparkles, Leaf, ShoppingBasket, Globe2, UtensilsCrossed } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+
+const PENDING_KEY = "bcv:pendingIngredients";
+
+function normalizeIngredients(raw: string): string {
+  const parts = raw
+    .split(/[\n,]+/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return parts.join(", ");
+}
 
 export const Route = createFileRoute("/")({
   component: Landing,
