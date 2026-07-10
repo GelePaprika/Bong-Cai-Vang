@@ -20,6 +20,28 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  const navigate = useNavigate();
+  const [ingredients, setIngredients] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSuggest = async () => {
+    const normalized = normalizeIngredients(ingredients);
+    if (!normalized) return;
+    setSubmitting(true);
+    const prompt = `I have these ingredients in my fridge: ${normalized}. Please plan tonight's family dinner.`;
+    try {
+      sessionStorage.setItem(PENDING_KEY, prompt);
+    } catch {
+      // ignore storage failures
+    }
+    const { data } = await supabase.auth.getSession();
+    if (data.session) {
+      navigate({ to: "/chat" });
+    } else {
+      navigate({ to: "/auth" });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
