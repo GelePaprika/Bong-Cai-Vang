@@ -100,6 +100,51 @@ function Landing() {
         </div>
       </section>
 
+      <section id="plan" className="mx-auto max-w-4xl px-6 pb-16">
+        <div className="rounded-3xl border border-border bg-card p-6 shadow-lg md:p-10">
+          <div className="mb-5 flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/25 text-[color:var(--chili)]">
+              <UtensilsCrossed className="h-5 w-5" />
+            </div>
+            <div>
+              <h2 className="font-serif text-2xl md:text-3xl">What's in your fridge tonight?</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Type or paste your ingredients — one per line, or comma separated.
+              </p>
+            </div>
+          </div>
+
+          <label htmlFor="ingredients" className="sr-only">
+            Available ingredients
+          </label>
+          <textarea
+            id="ingredients"
+            value={ingredients}
+            onChange={(e) => setIngredients(e.target.value)}
+            rows={8}
+            placeholder={"Chicken\nTomatoes\nPak choi\nCarrots\nGinger, garlic, spring onion"}
+            className="w-full resize-y rounded-2xl border border-border bg-background p-4 font-mono text-base leading-relaxed shadow-inner outline-none transition placeholder:text-muted-foreground/60 focus:border-primary focus:ring-2 focus:ring-primary/30"
+          />
+
+          <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-xs text-muted-foreground">
+              🌿 Tip: mix Vietnamese and English names — "cá basa, rau muống, tomatoes"
+              works great.
+            </p>
+            <button
+              type="button"
+              onClick={handleSuggest}
+              disabled={submitting || !ingredients.trim()}
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-lg transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              🍲 Suggest Dinner
+            </button>
+          </div>
+        </div>
+      </section>
+
+
+
       <section id="features" className="mx-auto grid max-w-6xl gap-5 px-6 pb-20 md:grid-cols-3">
         <Feature
           icon={<Leaf className="h-5 w-5" />}
