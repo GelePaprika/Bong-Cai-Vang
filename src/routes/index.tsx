@@ -36,7 +36,7 @@ function Landing() {
     }
     const { data } = await supabase.auth.getSession();
     if (data.session) {
-      navigate({ to: "/chat" });
+      navigate({ to: "/plan" });
     } else {
       navigate({ to: "/auth" });
     }
