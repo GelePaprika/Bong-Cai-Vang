@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
-import { generateText, Output, NoObjectGeneratedError } from "ai";
+import { generateObject, NoObjectGeneratedError } from "ai";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 
 const DishSchema = z.object({
@@ -69,13 +69,13 @@ export const generateMealPlan = createServerFn({ method: "POST" })
     const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}\n\nPlan tonight's family dinner.`;
 
     try {
-      const { experimental_output } = await generateText({
+      const { object } = await generateObject({
         model,
         system: SYSTEM,
         prompt,
-        experimental_output: Output.object({ schema: PlanSchema }),
+        schema: PlanSchema,
       });
-      return experimental_output as MealPlan;
+      return object as MealPlan;
     } catch (error) {
       if (NoObjectGeneratedError.isInstance(error)) {
         try {
