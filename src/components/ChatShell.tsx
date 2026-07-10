@@ -75,6 +75,29 @@ export function ChatShell({
     inputRef.current?.focus();
   }, [threadId, status]);
 
+  // Auto-send pending ingredients from landing page
+  const pendingSentRef = useRef(false);
+  useEffect(() => {
+    if (pendingSentRef.current) return;
+    if (initialMessages.length > 0) return;
+    if (messages.length > 0) return;
+    let pending: string | null = null;
+    try {
+      pending = sessionStorage.getItem("bcv:pendingIngredients");
+    } catch {
+      pending = null;
+    }
+    if (!pending) return;
+    pendingSentRef.current = true;
+    try {
+      sessionStorage.removeItem("bcv:pendingIngredients");
+    } catch {
+      // ignore
+    }
+    sendMessage({ text: pending });
+  }, [initialMessages.length, messages.length, sendMessage]);
+
+
   // Auto-title the thread from first user message
   useEffect(() => {
     if (renamedRef.current) return;
