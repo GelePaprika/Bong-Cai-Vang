@@ -63,7 +63,6 @@ Respond with ONLY valid minified JSON, no markdown, no code fences, no commentar
 where Dish = { "nameVi": string, "nameEn": string, "cookingTimeMinutes": number, "difficulty": "Easy"|"Medium"|"Hard", "healthy": boolean, "steps": string[], "imagePrompt": string }.`;
 
 export const generateMealPlan = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z.object({ ingredients: z.string().min(1) }).parse(d),
   )
