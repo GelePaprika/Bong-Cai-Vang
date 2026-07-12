@@ -1,18 +1,28 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import logo from "@/assets/logo.png";
 import hero from "@/assets/hero.jpg";
-import { Sparkles, Leaf, ShoppingBasket, Globe2, UtensilsCrossed } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import {
+  Sparkles,
+  Leaf,
+  ShoppingBasket,
+  Globe2,
+  UtensilsCrossed,
+  MessageCircle,
+  RefreshCw,
+} from "lucide-react";
+import { generateMealPlan, type MealPlan } from "@/lib/meal-plan.functions";
+import { MealPlanView, PlanSkeleton } from "@/components/MealPlanView";
 
 const PENDING_KEY = "bcv:pendingIngredients";
 
 function normalizeIngredients(raw: string): string {
-  const parts = raw
+  return raw
     .split(/[\n,]+/)
     .map((s) => s.trim())
-    .filter(Boolean);
-  return parts.join(", ");
+    .filter(Boolean)
+    .join(", ");
 }
 
 export const Route = createFileRoute("/")({
@@ -20,26 +30,55 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
-  const navigate = useNavigate();
+  const generate = useServerFn(generateMealPlan);
   const [ingredients, setIngredients] = useState("");
-  const [submitting, setSubmitting] = useState(false);
+  const [plan, setPlan] = useState<MealPlan | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [lastIngredients, setLastIngredients] = useState<string>("");
+  const resultRef = useRef<HTMLDivElement | null>(null);
+
+  const runPlan = async (ing: string) => {
+    setLoading(true);
+    setError(null);
+    setPlan(null);
+    try {
+      const result = await generate({ data: { ingredients: ing } });
+      setPlan(result);
+      setLastIngredients(ing);
+    } catch (e) {
+      setError(
+        e instanceof Error
+          ? e.message
+          : "The chef couldn't put together a plan this time. Try again.",
+      );
+    } finally {
+      setLoading(false);
+      // scroll to result after paint
+      setTimeout(() => {
+        resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 50);
+    }
+  };
 
   const handleSuggest = async () => {
     const normalized = normalizeIngredients(ingredients);
     if (!normalized) return;
-    setSubmitting(true);
-    const prompt = `I have these ingredients in my fridge: ${normalized}. Please plan tonight's family dinner.`;
+    await runPlan(normalized);
+  };
+
+  const openInChat = () => {
+    const ing = lastIngredients || normalizeIngredients(ingredients);
+    if (!ing) return;
     try {
-      sessionStorage.setItem(PENDING_KEY, prompt);
+      sessionStorage.setItem(
+        PENDING_KEY,
+        `I have these ingredients in my fridge: ${ing}. Please plan tonight's family dinner.`,
+      );
     } catch {
-      // ignore storage failures
+      /* ignore */
     }
-    const { data } = await supabase.auth.getSession();
-    if (data.session) {
-      navigate({ to: "/plan" });
-    } else {
-      navigate({ to: "/auth" });
-    }
+    window.location.href = "/chat";
   };
 
   return (
@@ -53,7 +92,7 @@ function Landing() {
           to="/auth"
           className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90"
         >
-          Start planning
+          Sign in
         </Link>
       </header>
 
@@ -73,12 +112,12 @@ function Landing() {
             dish, and a grocery list for whatever you need to bring home.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <Link
-              to="/auth"
+            <a
+              href="#plan"
               className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow hover:bg-primary/90"
             >
-              Plan this week's meals
-            </Link>
+              Plan tonight's dinner
+            </a>
             <a
               href="#features"
               className="rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold hover:bg-accent"
@@ -92,7 +131,7 @@ function Landing() {
           <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-gradient-to-br from-primary/30 to-[color:var(--basil)]/20 blur-2xl" />
           <img
             src={hero}
-            alt="A Vietnamese family gathered around a wooden table sharing a home-cooked dinner with cơm trắng, canh chua cá lóc, thịt kho tộ, rau muống xào tỏi, and cá chiên xả ớt"
+            alt="A Vietnamese family gathered around a wooden table sharing a home-cooked dinner"
             width={1536}
             height={1024}
             className="rounded-3xl border border-border shadow-xl"
@@ -100,7 +139,7 @@ function Landing() {
         </div>
       </section>
 
-      <section id="plan" className="mx-auto max-w-4xl px-6 pb-16">
+      <section id="plan" className="mx-auto max-w-4xl px-6 pb-10">
         <div className="rounded-3xl border border-border bg-card p-6 shadow-lg md:p-10">
           <div className="mb-5 flex items-start gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/25 text-[color:var(--chili)]">
@@ -128,22 +167,68 @@ function Landing() {
 
           <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-muted-foreground">
-              🌿 Tip: mix Vietnamese and English names — "cá basa, rau muống, tomatoes"
-              works great.
+              🌿 Tip: mix Vietnamese and English names — "cá basa, rau muống, tomatoes" works great.
             </p>
             <button
               type="button"
               onClick={handleSuggest}
-              disabled={submitting || !ingredients.trim()}
+              disabled={loading || !ingredients.trim()}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-lg transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              🍲 Suggest Dinner
+              {loading ? (
+                <>
+                  <RefreshCw className="h-4 w-4 animate-spin" /> Cooking up ideas…
+                </>
+              ) : (
+                <>🍲 Suggest Dinner</>
+              )}
             </button>
           </div>
         </div>
       </section>
 
-
+      <section
+        ref={resultRef}
+        id="result"
+        className="mx-auto max-w-6xl px-6 pb-16"
+        aria-live="polite"
+      >
+        {error && (
+          <div className="rounded-2xl border border-destructive/30 bg-destructive/10 p-6 text-sm text-destructive">
+            {error}
+          </div>
+        )}
+        {loading && !plan && <PlanSkeleton />}
+        {plan && (
+          <>
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+              <div className="text-sm text-muted-foreground">
+                <span className="font-semibold text-foreground">Tonight's fridge:</span>{" "}
+                {lastIngredients}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => runPlan(lastIngredients)}
+                  disabled={loading}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium hover:bg-accent disabled:opacity-50"
+                >
+                  <RefreshCw className={"h-3.5 w-3.5 " + (loading ? "animate-spin" : "")} />{" "}
+                  Regenerate
+                </button>
+                <button
+                  type="button"
+                  onClick={openInChat}
+                  className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+                >
+                  <MessageCircle className="h-3.5 w-3.5" /> Ask chef
+                </button>
+              </div>
+            </div>
+            <MealPlanView plan={plan} />
+          </>
+        )}
+      </section>
 
       <section id="features" className="mx-auto grid max-w-6xl gap-5 px-6 pb-20 md:grid-cols-3">
         <Feature
@@ -162,7 +247,6 @@ function Landing() {
           body="Every meal comes with a vivid photo, a short recipe, and a categorized shopping list so nothing in the fridge goes to waste."
         />
       </section>
-
 
       <footer className="border-t border-border">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6 text-xs text-muted-foreground">
