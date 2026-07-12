@@ -53,7 +53,15 @@ For every dish:
 - steps: 4-6 short imperative lines, no long paragraphs.
 - imagePrompt: vivid ENGLISH food-photography prompt of the finished plated dish, top-down or 3/4, natural light, wooden table.
 
-Be concise. Do not invent ingredients not in the fridge unless they go on the shopping list.`;
+Be concise. Do not invent ingredients not in the fridge unless they go on the shopping list.
+
+Respond with ONLY valid minified JSON, no markdown, no code fences, no commentary. Shape:
+{
+  "recommended": Dish,
+  "alternatives": [Dish, Dish, Dish],
+  "shoppingList": [{ "name": string, "quantity"?: string, "category": string }]
+}
+where Dish = { "nameVi": string, "nameEn": string, "cookingTimeMinutes": number, "difficulty": "Easy"|"Medium"|"Hard", "healthy": boolean, "steps": string[], "imagePrompt": string }.`;
 
 export const generateMealPlan = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -66,7 +74,24 @@ export const generateMealPlan = createServerFn({ method: "POST" })
     const gateway = createLovableAiGatewayProvider(key);
     const model = gateway("google/gemini-3-flash-preview");
 
-    const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}\n\nPlan tonight's family dinner.`;
+    const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}\n\nPlan tonight's family dinner. Return JSON only.`;
+
+    const tryParse = (text: string): MealPlan | null => {
+      if (!text) return null;
+      const cleaned = text
+        .replace(/^\s*```(?:json)?\s*/i, "")
+        .replace(/\s*```\s*$/i, "")
+        .trim();
+      const start = cleaned.indexOf("{");
+      const end = cleaned.lastIndexOf("}");
+      if (start === -1 || end === -1) return null;
+      const candidate = cleaned.slice(start, end + 1);
+      try {
+        return PlanSchema.parse(JSON.parse(candidate));
+      } catch {
+        return null;
+      }
+    };
 
     try {
       const { object } = await generateObject({
@@ -78,12 +103,21 @@ export const generateMealPlan = createServerFn({ method: "POST" })
       return object as MealPlan;
     } catch (error) {
       if (NoObjectGeneratedError.isInstance(error)) {
-        try {
-          return PlanSchema.parse(JSON.parse(error.text ?? "{}"));
-        } catch {
-          throw new Error("The chef couldn't put together a plan this time. Try again with a slightly different ingredient list.");
-        }
+        const parsed = tryParse(error.text ?? "");
+        if (parsed) return parsed;
       }
-      throw error;
+      // Fallback: plain text generation, then extract JSON
+      const { generateText } = await import("ai");
+      const { text } = await generateText({
+        model,
+        system: SYSTEM,
+        prompt,
+      });
+      const parsed = tryParse(text);
+      if (parsed) return parsed;
+      throw new Error(
+        "The chef couldn't put together a plan this time. Try again with a slightly different ingredient list.",
+      );
     }
   });
+
