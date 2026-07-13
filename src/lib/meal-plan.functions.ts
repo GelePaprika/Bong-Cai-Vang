@@ -64,7 +64,12 @@ where Dish = { "nameVi": string, "nameEn": string, "cookingTimeMinutes": number,
 
 export const generateMealPlan = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
-    z.object({ ingredients: z.string().min(1) }).parse(d),
+    z
+      .object({
+        ingredients: z.string().min(1),
+        garden: z.string().optional().default(""),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     const key = process.env.LOVABLE_API_KEY;
@@ -72,7 +77,10 @@ export const generateMealPlan = createServerFn({ method: "POST" })
     const gateway = createLovableAiGatewayProvider(key);
     const model = gateway("google/gemini-3-flash-preview");
 
-    const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}\n\nPlan tonight's family dinner. Return JSON only.`;
+    const gardenBlock = data.garden.trim()
+      ? `\n\n🌱 Harvested from the family garden TODAY (PRIORITIZE these first to avoid food waste — try to feature at least one in the recommended dish):\n${data.garden}`
+      : "";
+    const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}${gardenBlock}\n\nPlan tonight's family dinner. Return JSON only.`;
 
     const tryParse = (text: string): MealPlan | null => {
       if (!text) return null;
