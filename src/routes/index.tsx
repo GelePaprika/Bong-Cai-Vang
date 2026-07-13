@@ -202,7 +202,7 @@ function Landing() {
             <button
               type="button"
               onClick={handleSuggest}
-              disabled={loading || !ingredients.trim()}
+              disabled={loading || (!ingredients.trim() && !garden.trim())}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-lg transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? (
