@@ -232,9 +232,16 @@ function Landing() {
         {plan && (
           <>
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-              <div className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Tonight's fridge:</span>{" "}
-                {lastIngredients}
+              <div className="space-y-1 text-sm text-muted-foreground">
+                <div>
+                  <span className="font-semibold text-foreground">Tonight's fridge:</span>{" "}
+                  {lastIngredients}
+                </div>
+                {lastGarden && (
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--basil)]/15 px-2.5 py-1 text-xs font-medium text-[color:var(--basil)]">
+                    <Sprout className="h-3 w-3" /> Garden today: {lastGarden}
+                  </div>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <button
@@ -255,7 +262,7 @@ function Landing() {
                 </button>
               </div>
             </div>
-            <MealPlanView plan={plan} />
+            <MealPlanView plan={plan} fromGarden={Boolean(lastGarden)} />
           </>
         )}
       </section>
