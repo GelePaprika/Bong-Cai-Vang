@@ -170,6 +170,31 @@ function Landing() {
             className="w-full resize-y rounded-2xl border border-border bg-background p-4 font-mono text-base leading-relaxed shadow-inner outline-none transition placeholder:text-muted-foreground/60 focus:border-primary focus:ring-2 focus:ring-primary/30"
           />
 
+          <div className="mt-6 rounded-2xl border border-[color:var(--basil)]/30 bg-[color:var(--basil)]/5 p-5">
+            <div className="mb-3 flex items-start gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--basil)]/20 text-[color:var(--basil)]">
+                <Sprout className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="font-serif text-lg leading-tight">🌱 Garden Today</h3>
+                <p className="text-xs text-muted-foreground">
+                  Anything harvested from your garden today? I'll use it first so nothing wilts.
+                </p>
+              </div>
+            </div>
+            <label htmlFor="garden" className="sr-only">
+              Harvested from the garden today
+            </label>
+            <textarea
+              id="garden"
+              value={garden}
+              onChange={(e) => setGarden(e.target.value)}
+              rows={4}
+              placeholder={"Pak choi\nMorning glory\nVietnamese basil\nMint, spring onion"}
+              className="w-full resize-y rounded-xl border border-[color:var(--basil)]/30 bg-background p-3 font-mono text-sm leading-relaxed shadow-inner outline-none transition placeholder:text-muted-foreground/60 focus:border-[color:var(--basil)] focus:ring-2 focus:ring-[color:var(--basil)]/30"
+            />
+          </div>
+
           <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-muted-foreground">
               🌿 Tip: mix Vietnamese and English names — "cá basa, rau muống, tomatoes" works great.
