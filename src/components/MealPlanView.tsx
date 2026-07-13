@@ -212,7 +212,7 @@ function AlternativeCard({ dish, onSelect }: { dish: Dish; onSelect: () => void 
         <MealImage dishName={dish.nameVi} prompt={dish.imagePrompt} />
       </div>
       <div className="p-4">
-        <h3 className="font-serif text-lg leading-snug">{dish.nameVi}</h3>
+        <h3 className="font-serif text-lg leading-snug"><span className="font-vi">{dish.nameVi}</span></h3>
         <p className="text-xs italic text-muted-foreground">{dish.nameEn}</p>
         <div className="mt-3 flex flex-wrap gap-1.5">
           <TimeBadge minutes={dish.cookingTimeMinutes} />
