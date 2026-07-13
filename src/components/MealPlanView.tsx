@@ -89,7 +89,7 @@ function RecommendedSection({ dish, promoted }: { dish: Dish; promoted: boolean 
           <MealImage dishName={dish.nameVi} prompt={dish.imagePrompt} />
         </div>
         <div>
-          <h1 className="font-serif text-4xl leading-tight md:text-5xl">{dish.nameVi}</h1>
+          <h1 className="font-serif text-4xl leading-tight md:text-5xl"><span className="font-vi">{dish.nameVi}</span></h1>
           <p className="mt-2 text-lg italic text-muted-foreground">{dish.nameEn}</p>
           <div className="mt-5 flex flex-wrap gap-2">
             <TimeBadge minutes={dish.cookingTimeMinutes} />
