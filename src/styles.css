@@ -64,6 +64,12 @@
   --color-chili: var(--chili);
 }
 
+@utility font-vi {
+  font-family: var(--font-vietnamese);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
 :root {
   --radius: 0.9rem;
 
