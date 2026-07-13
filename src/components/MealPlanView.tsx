@@ -77,7 +77,7 @@ function HealthyBadge() {
   );
 }
 
-function RecommendedSection({ dish, promoted }: { dish: Dish; promoted: boolean }) {
+function RecommendedSection({ dish, promoted, fromGarden }: { dish: Dish; promoted: boolean; fromGarden: boolean }) {
   return (
     <section>
       <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[color:var(--chili)]">
@@ -95,6 +95,11 @@ function RecommendedSection({ dish, promoted }: { dish: Dish; promoted: boolean 
             <TimeBadge minutes={dish.cookingTimeMinutes} />
             <DifficultyBadge level={dish.difficulty} />
             {dish.healthy && <HealthyBadge />}
+            {fromGarden && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-[color:var(--basil)]/20 px-3 py-1 text-xs font-semibold text-[color:var(--basil)] ring-1 ring-[color:var(--basil)]/30">
+                🌿 Fresh from the garden
+              </span>
+            )}
           </div>
         </div>
       </div>
