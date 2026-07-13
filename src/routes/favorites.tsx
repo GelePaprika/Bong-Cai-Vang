@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { MealImage } from "@/components/MealImage";
-import { ShoppingList } from "@/components/ShoppingList";
+
 import { useFavorites, type FavoriteRecipe } from "@/lib/favorites";
 import type { Dish } from "@/lib/meal-plan.functions";
 
