@@ -297,7 +297,13 @@ function Landing() {
                 </button>
               </div>
             </div>
-            <MealPlanView plan={plan} fromGarden={Boolean(lastGarden)} />
+            <MealPlanView
+              plan={plan}
+              fromGarden={Boolean(lastGarden)}
+              ingredientsUsed={lastIngredients}
+              garden={lastGarden}
+            />
+
           </>
         )}
       </section>
