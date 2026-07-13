@@ -6,7 +6,17 @@ import type { Dish, MealPlan } from "@/lib/meal-plan.functions";
 import { useFavorites } from "@/lib/favorites";
 
 
-export function MealPlanView({ plan, fromGarden = false }: { plan: MealPlan; fromGarden?: boolean }) {
+export function MealPlanView({
+  plan,
+  fromGarden = false,
+  ingredientsUsed,
+  garden,
+}: {
+  plan: MealPlan;
+  fromGarden?: boolean;
+  ingredientsUsed?: string;
+  garden?: string;
+}) {
   const [activeIdx, setActiveIdx] = useState<number>(-1); // -1 = recommended
 
   const featured: Dish =
@@ -19,7 +29,15 @@ export function MealPlanView({ plan, fromGarden = false }: { plan: MealPlan; fro
 
   return (
     <div className="space-y-10">
-      <RecommendedSection dish={featured} promoted={activeIdx !== -1} fromGarden={fromGarden} shoppingList={plan.shoppingList} />
+      <RecommendedSection
+        dish={featured}
+        promoted={activeIdx !== -1}
+        fromGarden={fromGarden}
+        shoppingList={plan.shoppingList}
+        ingredientsUsed={ingredientsUsed}
+        garden={garden}
+      />
+
 
       <section className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <RecipeSteps dish={featured} />
