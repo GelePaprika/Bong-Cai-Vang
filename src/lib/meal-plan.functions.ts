@@ -130,7 +130,7 @@ export const generateMealPlan = createServerFn({ method: "POST" })
         prompt,
         schema: PlanSchema,
       });
-      return object as MealPlan;
+      return normalizePlan(object as MealPlan);
     } catch (error) {
       if (NoObjectGeneratedError.isInstance(error)) {
         const parsed = tryParse(error.text ?? "");
