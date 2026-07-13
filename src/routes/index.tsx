@@ -11,6 +11,7 @@ import {
   UtensilsCrossed,
   MessageCircle,
   RefreshCw,
+  Sprout,
 } from "lucide-react";
 import { generateMealPlan, type MealPlan } from "@/lib/meal-plan.functions";
 import { MealPlanView, PlanSkeleton } from "@/components/MealPlanView";
@@ -32,20 +33,23 @@ export const Route = createFileRoute("/")({
 function Landing() {
   const generate = useServerFn(generateMealPlan);
   const [ingredients, setIngredients] = useState("");
+  const [garden, setGarden] = useState("");
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastIngredients, setLastIngredients] = useState<string>("");
+  const [lastGarden, setLastGarden] = useState<string>("");
   const resultRef = useRef<HTMLDivElement | null>(null);
 
-  const runPlan = async (ing: string) => {
+  const runPlan = async (ing: string, gard: string) => {
     setLoading(true);
     setError(null);
     setPlan(null);
     try {
-      const result = await generate({ data: { ingredients: ing } });
+      const result = await generate({ data: { ingredients: ing, garden: gard } });
       setPlan(result);
       setLastIngredients(ing);
+      setLastGarden(gard);
     } catch (e) {
       setError(
         e instanceof Error
@@ -63,8 +67,9 @@ function Landing() {
 
   const handleSuggest = async () => {
     const normalized = normalizeIngredients(ingredients);
-    if (!normalized) return;
-    await runPlan(normalized);
+    const normalizedGarden = normalizeIngredients(garden);
+    if (!normalized && !normalizedGarden) return;
+    await runPlan(normalized || normalizedGarden, normalizedGarden);
   };
 
   const openInChat = () => {
@@ -165,6 +170,31 @@ function Landing() {
             className="w-full resize-y rounded-2xl border border-border bg-background p-4 font-mono text-base leading-relaxed shadow-inner outline-none transition placeholder:text-muted-foreground/60 focus:border-primary focus:ring-2 focus:ring-primary/30"
           />
 
+          <div className="mt-6 rounded-2xl border border-[color:var(--basil)]/30 bg-[color:var(--basil)]/5 p-5">
+            <div className="mb-3 flex items-start gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[color:var(--basil)]/20 text-[color:var(--basil)]">
+                <Sprout className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="font-serif text-lg leading-tight">🌱 Garden Today</h3>
+                <p className="text-xs text-muted-foreground">
+                  Anything harvested from your garden today? I'll use it first so nothing wilts.
+                </p>
+              </div>
+            </div>
+            <label htmlFor="garden" className="sr-only">
+              Harvested from the garden today
+            </label>
+            <textarea
+              id="garden"
+              value={garden}
+              onChange={(e) => setGarden(e.target.value)}
+              rows={4}
+              placeholder={"Pak choi\nMorning glory\nVietnamese basil\nMint, spring onion"}
+              className="w-full resize-y rounded-xl border border-[color:var(--basil)]/30 bg-background p-3 font-mono text-sm leading-relaxed shadow-inner outline-none transition placeholder:text-muted-foreground/60 focus:border-[color:var(--basil)] focus:ring-2 focus:ring-[color:var(--basil)]/30"
+            />
+          </div>
+
           <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-muted-foreground">
               🌿 Tip: mix Vietnamese and English names — "cá basa, rau muống, tomatoes" works great.
@@ -172,7 +202,7 @@ function Landing() {
             <button
               type="button"
               onClick={handleSuggest}
-              disabled={loading || !ingredients.trim()}
+              disabled={loading || (!ingredients.trim() && !garden.trim())}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-lg transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? (
@@ -202,14 +232,21 @@ function Landing() {
         {plan && (
           <>
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
-              <div className="text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Tonight's fridge:</span>{" "}
-                {lastIngredients}
+              <div className="space-y-1 text-sm text-muted-foreground">
+                <div>
+                  <span className="font-semibold text-foreground">Tonight's fridge:</span>{" "}
+                  {lastIngredients}
+                </div>
+                {lastGarden && (
+                  <div className="inline-flex items-center gap-1.5 rounded-full bg-[color:var(--basil)]/15 px-2.5 py-1 text-xs font-medium text-[color:var(--basil)]">
+                    <Sprout className="h-3 w-3" /> Garden today: {lastGarden}
+                  </div>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => runPlan(lastIngredients)}
+                  onClick={() => runPlan(lastIngredients, lastGarden)}
                   disabled={loading}
                   className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium hover:bg-accent disabled:opacity-50"
                 >
@@ -225,7 +262,7 @@ function Landing() {
                 </button>
               </div>
             </div>
-            <MealPlanView plan={plan} />
+            <MealPlanView plan={plan} fromGarden={Boolean(lastGarden)} />
           </>
         )}
       </section>
