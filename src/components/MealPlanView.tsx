@@ -137,7 +137,7 @@ function RecommendedSection({
       </div>
       <div className="grid gap-6 md:grid-cols-[1.15fr_1fr] md:items-center">
         <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-xl">
-          <MealImage dishName={dish.nameVi} prompt={dish.imagePrompt} />
+          <MealImage key={dish.imagePrompt} dishName={dish.nameVi} prompt={dish.imagePrompt} />
         </div>
         <div>
           <div className="flex items-start justify-between gap-3">
