@@ -11,6 +11,7 @@ import {
   UtensilsCrossed,
   MessageCircle,
   RefreshCw,
+  Sprout,
 } from "lucide-react";
 import { generateMealPlan, type MealPlan } from "@/lib/meal-plan.functions";
 import { MealPlanView, PlanSkeleton } from "@/components/MealPlanView";
