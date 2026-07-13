@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { useServerFn } from "@tanstack/react-start";
 import logo from "@/assets/logo.png";
 import hero from "@/assets/hero.jpg";
@@ -13,7 +14,9 @@ import {
   RefreshCw,
   Sprout,
   Settings,
+  Heart,
 } from "lucide-react";
+
 import { generateMealPlan, type MealPlan } from "@/lib/meal-plan.functions";
 import { MealPlanView, PlanSkeleton } from "@/components/MealPlanView";
 import { useFamilyProfile, profileToPromptBlock } from "@/lib/family-profile";
@@ -43,6 +46,20 @@ function Landing() {
   const [lastIngredients, setLastIngredients] = useState<string>("");
   const [lastGarden, setLastGarden] = useState<string>("");
   const resultRef = useRef<HTMLDivElement | null>(null);
+
+  // Prefill ingredients if arriving from "Cook again" on Favorites
+  useEffect(() => {
+    try {
+      const pending = sessionStorage.getItem(PENDING_KEY);
+      if (pending && !pending.startsWith("I have these ingredients")) {
+        setIngredients(pending);
+        sessionStorage.removeItem(PENDING_KEY);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
 
   const runPlan = async (ing: string, gard: string) => {
     setLoading(true);
@@ -98,11 +115,18 @@ function Landing() {
         </div>
         <div className="flex items-center gap-2">
           <Link
+            to="/favorites"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-accent"
+          >
+            <Heart className="h-4 w-4 text-[color:var(--chili)]" /> Favorites
+          </Link>
+          <Link
             to="/settings"
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-accent"
           >
             <Settings className="h-4 w-4" /> Family profile
           </Link>
+
           <Link
             to="/auth"
             className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90"
@@ -273,7 +297,13 @@ function Landing() {
                 </button>
               </div>
             </div>
-            <MealPlanView plan={plan} fromGarden={Boolean(lastGarden)} />
+            <MealPlanView
+              plan={plan}
+              fromGarden={Boolean(lastGarden)}
+              ingredientsUsed={lastIngredients}
+              garden={lastGarden}
+            />
+
           </>
         )}
       </section>
