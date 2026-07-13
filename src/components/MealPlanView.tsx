@@ -19,7 +19,7 @@ export function MealPlanView({ plan, fromGarden = false }: { plan: MealPlan; fro
 
   return (
     <div className="space-y-10">
-      <RecommendedSection dish={featured} promoted={activeIdx !== -1} fromGarden={fromGarden} />
+      <RecommendedSection dish={featured} promoted={activeIdx !== -1} fromGarden={fromGarden} shoppingList={plan.shoppingList} />
 
       <section className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <RecipeSteps dish={featured} />
