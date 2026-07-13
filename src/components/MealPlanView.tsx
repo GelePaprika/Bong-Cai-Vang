@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { MealImage } from "@/components/MealImage";
-import { Clock, Flame, Leaf, ShoppingBasket, Sparkles } from "lucide-react";
+import { Clock, Flame, Heart, Leaf, ShoppingBasket, Sparkles } from "lucide-react";
+import { toast } from "sonner";
 import type { Dish, MealPlan } from "@/lib/meal-plan.functions";
+import { useFavorites } from "@/lib/favorites";
+
 
 export function MealPlanView({ plan, fromGarden = false }: { plan: MealPlan; fromGarden?: boolean }) {
   const [activeIdx, setActiveIdx] = useState<number>(-1); // -1 = recommended
