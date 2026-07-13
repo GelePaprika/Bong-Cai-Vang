@@ -33,20 +33,23 @@ export const Route = createFileRoute("/")({
 function Landing() {
   const generate = useServerFn(generateMealPlan);
   const [ingredients, setIngredients] = useState("");
+  const [garden, setGarden] = useState("");
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastIngredients, setLastIngredients] = useState<string>("");
+  const [lastGarden, setLastGarden] = useState<string>("");
   const resultRef = useRef<HTMLDivElement | null>(null);
 
-  const runPlan = async (ing: string) => {
+  const runPlan = async (ing: string, gard: string) => {
     setLoading(true);
     setError(null);
     setPlan(null);
     try {
-      const result = await generate({ data: { ingredients: ing } });
+      const result = await generate({ data: { ingredients: ing, garden: gard } });
       setPlan(result);
       setLastIngredients(ing);
+      setLastGarden(gard);
     } catch (e) {
       setError(
         e instanceof Error
@@ -64,8 +67,9 @@ function Landing() {
 
   const handleSuggest = async () => {
     const normalized = normalizeIngredients(ingredients);
-    if (!normalized) return;
-    await runPlan(normalized);
+    const normalizedGarden = normalizeIngredients(garden);
+    if (!normalized && !normalizedGarden) return;
+    await runPlan(normalized || normalizedGarden, normalizedGarden);
   };
 
   const openInChat = () => {
