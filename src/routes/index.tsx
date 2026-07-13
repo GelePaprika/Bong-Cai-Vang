@@ -47,6 +47,20 @@ function Landing() {
   const [lastGarden, setLastGarden] = useState<string>("");
   const resultRef = useRef<HTMLDivElement | null>(null);
 
+  // Prefill ingredients if arriving from "Cook again" on Favorites
+  useEffect(() => {
+    try {
+      const pending = sessionStorage.getItem(PENDING_KEY);
+      if (pending && !pending.startsWith("I have these ingredients")) {
+        setIngredients(pending);
+        sessionStorage.removeItem(PENDING_KEY);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+
   const runPlan = async (ing: string, gard: string) => {
     setLoading(true);
     setError(null);
