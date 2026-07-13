@@ -73,6 +73,7 @@ export const generateMealPlan = createServerFn({ method: "POST" })
       .object({
         ingredients: z.string().min(1),
         garden: z.string().optional().default(""),
+        profile: z.string().optional().default(""),
       })
       .parse(d),
   )
@@ -85,7 +86,8 @@ export const generateMealPlan = createServerFn({ method: "POST" })
     const gardenBlock = data.garden.trim()
       ? `\n\n🌱 Harvested from the family garden TODAY (PRIORITIZE these first to avoid food waste — try to feature at least one in the recommended dish):\n${data.garden}`
       : "";
-    const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}${gardenBlock}\n\nPlan tonight's family dinner. Return JSON only.`;
+    const profileBlock = data.profile.trim() ? `\n\n${data.profile}` : "";
+    const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}${gardenBlock}${profileBlock}\n\nPlan tonight's family dinner. Return JSON only.`;
 
     const nfc = (s: string) => s.normalize("NFC");
     const normalizeDish = (d: Dish): Dish => ({
