@@ -80,7 +80,32 @@ function HealthyBadge() {
   );
 }
 
-function RecommendedSection({ dish, promoted, fromGarden }: { dish: Dish; promoted: boolean; fromGarden: boolean }) {
+function RecommendedSection({
+  dish,
+  promoted,
+  fromGarden,
+  shoppingList,
+}: {
+  dish: Dish;
+  promoted: boolean;
+  fromGarden: boolean;
+  shoppingList: MealPlan["shoppingList"];
+}) {
+  const { save, remove, isSaved, favorites } = useFavorites();
+  const saved = isSaved(dish);
+  const onToggleSave = () => {
+    if (saved) {
+      const key = dish.nameVi.trim().toLowerCase();
+      const match = favorites.find((f) => f.dish.nameVi.trim().toLowerCase() === key);
+      if (match) {
+        remove(match.id);
+        toast("Removed from Favorites.");
+      }
+    } else {
+      save(dish, { shoppingList });
+      toast.success("Recipe saved to Favorites.");
+    }
+  };
   return (
     <section>
       <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[color:var(--chili)]">
@@ -92,7 +117,23 @@ function RecommendedSection({ dish, promoted, fromGarden }: { dish: Dish; promot
           <MealImage dishName={dish.nameVi} prompt={dish.imagePrompt} />
         </div>
         <div>
-          <h1 className="font-serif text-4xl leading-tight md:text-5xl"><span className="font-vi">{dish.nameVi}</span></h1>
+          <div className="flex items-start justify-between gap-3">
+            <h1 className="font-serif text-4xl leading-tight md:text-5xl"><span className="font-vi">{dish.nameVi}</span></h1>
+            <button
+              type="button"
+              onClick={onToggleSave}
+              aria-pressed={saved}
+              aria-label={saved ? "Remove from Favorites" : "Save to Favorites"}
+              className={
+                "shrink-0 rounded-full border p-2.5 shadow-sm transition " +
+                (saved
+                  ? "border-[color:var(--chili)]/40 bg-[color:var(--chili)]/10 text-[color:var(--chili)]"
+                  : "border-border bg-card text-muted-foreground hover:text-[color:var(--chili)] hover:border-[color:var(--chili)]/40")
+              }
+            >
+              <Heart className={"h-5 w-5 " + (saved ? "fill-current" : "")} />
+            </button>
+          </div>
           <p className="mt-2 text-lg italic text-muted-foreground">{dish.nameEn}</p>
           <div className="mt-5 flex flex-wrap gap-2">
             <TimeBadge minutes={dish.cookingTimeMinutes} />
@@ -109,6 +150,7 @@ function RecommendedSection({ dish, promoted, fromGarden }: { dish: Dish; promot
     </section>
   );
 }
+
 
 function RecipeSteps({ dish }: { dish: Dish }) {
   return (
