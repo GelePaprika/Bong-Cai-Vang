@@ -44,8 +44,12 @@ Return a plan with:
 - A shopping list of missing ingredients (categories like Vegetables, Protein, Pantry, Herbs & spices).
 
 For every dish:
-- nameVi: Vietnamese name (e.g. "Canh chua cá lóc").
-- nameEn: short English translation (e.g. "Sour tamarind fish soup").
+- nameVi: the authentic Vietnamese dish name with FULL, CORRECT diacritics (e.g. "Gà hấp cải chíp tỏi phi", "Canh chua cá lóc", "Thịt kho tộ"). Use precomposed Unicode (NFC) — never split a base letter and a combining accent. Capitalize only the first word and proper nouns.
+- nameEn: a natural, restaurant-menu-quality English translation in Title Case, using "&" for compound dishes. NOT a literal word-for-word translation. Examples:
+    • "Gà hấp cải chíp tỏi phi" → "Steamed Chicken with Pak Choi & Crispy Fried Garlic"
+    • "Cà tím sốt thịt băm" → "Tomato-Braised Eggplant with Minced Pork"
+    • "Canh chua cá lóc" → "Sour Tamarind Fish Soup with Snakehead"
+  Use familiar English produce names: pak choi (not paksoi), morning glory (not water spinach), spring onion, coriander, fish sauce.
 - cookingTimeMinutes: realistic integer.
 - difficulty: Easy | Medium | Hard.
 - healthy: true if it's vegetable-forward, low salt/sugar, light on frying.
@@ -61,6 +65,7 @@ Respond with ONLY valid minified JSON, no markdown, no code fences, no commentar
   "shoppingList": [{ "name": string, "quantity"?: string, "category": string }]
 }
 where Dish = { "nameVi": string, "nameEn": string, "cookingTimeMinutes": number, "difficulty": "Easy"|"Medium"|"Hard", "healthy": boolean, "steps": string[], "imagePrompt": string }.`;
+
 
 export const generateMealPlan = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
@@ -81,6 +86,25 @@ export const generateMealPlan = createServerFn({ method: "POST" })
       ? `\n\n🌱 Harvested from the family garden TODAY (PRIORITIZE these first to avoid food waste — try to feature at least one in the recommended dish):\n${data.garden}`
       : "";
     const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}${gardenBlock}\n\nPlan tonight's family dinner. Return JSON only.`;
+
+    const nfc = (s: string) => s.normalize("NFC");
+    const normalizeDish = (d: Dish): Dish => ({
+      ...d,
+      nameVi: nfc(d.nameVi),
+      nameEn: nfc(d.nameEn),
+      steps: d.steps.map(nfc),
+      imagePrompt: nfc(d.imagePrompt),
+    });
+    const normalizePlan = (p: MealPlan): MealPlan => ({
+      recommended: normalizeDish(p.recommended),
+      alternatives: p.alternatives.map(normalizeDish),
+      shoppingList: p.shoppingList.map((it) => ({
+        ...it,
+        name: nfc(it.name),
+        category: nfc(it.category),
+        quantity: it.quantity ? nfc(it.quantity) : it.quantity,
+      })),
+    });
 
     const tryParse = (text: string): MealPlan | null => {
       if (!text) return null;
@@ -106,11 +130,11 @@ export const generateMealPlan = createServerFn({ method: "POST" })
         prompt,
         schema: PlanSchema,
       });
-      return object as MealPlan;
+      return normalizePlan(object as MealPlan);
     } catch (error) {
       if (NoObjectGeneratedError.isInstance(error)) {
         const parsed = tryParse(error.text ?? "");
-        if (parsed) return parsed;
+        if (parsed) return normalizePlan(parsed);
       }
       // Fallback: plain text generation, then extract JSON
       const { generateText } = await import("ai");
@@ -120,7 +144,7 @@ export const generateMealPlan = createServerFn({ method: "POST" })
         prompt,
       });
       const parsed = tryParse(text);
-      if (parsed) return parsed;
+      if (parsed) return normalizePlan(parsed);
       throw new Error(
         "The chef couldn't put together a plan this time. Try again with a slightly different ingredient list.",
       );
