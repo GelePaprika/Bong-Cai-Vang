@@ -406,5 +406,3 @@ function ShoppingListInline({
   );
 }
 
-// Referenced (kept for future integration but not currently used inline)
-void ShoppingList;
