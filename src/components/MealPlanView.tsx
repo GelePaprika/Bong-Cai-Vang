@@ -3,7 +3,7 @@ import { MealImage } from "@/components/MealImage";
 import { Clock, Flame, Leaf, ShoppingBasket, Sparkles } from "lucide-react";
 import type { Dish, MealPlan } from "@/lib/meal-plan.functions";
 
-export function MealPlanView({ plan }: { plan: MealPlan }) {
+export function MealPlanView({ plan, fromGarden = false }: { plan: MealPlan; fromGarden?: boolean }) {
   const [activeIdx, setActiveIdx] = useState<number>(-1); // -1 = recommended
 
   const featured: Dish =
@@ -16,7 +16,7 @@ export function MealPlanView({ plan }: { plan: MealPlan }) {
 
   return (
     <div className="space-y-10">
-      <RecommendedSection dish={featured} promoted={activeIdx !== -1} />
+      <RecommendedSection dish={featured} promoted={activeIdx !== -1} fromGarden={fromGarden} />
 
       <section className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <RecipeSteps dish={featured} />
