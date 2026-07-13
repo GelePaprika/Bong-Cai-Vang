@@ -103,11 +103,15 @@ function RecommendedSection({
   promoted,
   fromGarden,
   shoppingList,
+  ingredientsUsed,
+  garden,
 }: {
   dish: Dish;
   promoted: boolean;
   fromGarden: boolean;
   shoppingList: MealPlan["shoppingList"];
+  ingredientsUsed?: string;
+  garden?: string;
 }) {
   const { save, remove, isSaved, favorites } = useFavorites();
   const saved = isSaved(dish);
@@ -120,10 +124,11 @@ function RecommendedSection({
         toast("Removed from Favorites.");
       }
     } else {
-      save(dish, { shoppingList });
+      save(dish, { shoppingList, ingredientsUsed, garden });
       toast.success("Recipe saved to Favorites.");
     }
   };
+
   return (
     <section>
       <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[color:var(--chili)]">
