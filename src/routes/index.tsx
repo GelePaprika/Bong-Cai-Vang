@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { useServerFn } from "@tanstack/react-start";
 import logo from "@/assets/logo.png";
 import hero from "@/assets/hero.jpg";
