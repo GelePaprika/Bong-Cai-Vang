@@ -34,6 +34,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const generate = useServerFn(generateMealPlan);
+  const { profile } = useFamilyProfile();
   const [ingredients, setIngredients] = useState("");
   const [garden, setGarden] = useState("");
   const [plan, setPlan] = useState<MealPlan | null>(null);
