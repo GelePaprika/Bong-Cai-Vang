@@ -87,6 +87,25 @@ export const generateMealPlan = createServerFn({ method: "POST" })
       : "";
     const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}${gardenBlock}\n\nPlan tonight's family dinner. Return JSON only.`;
 
+    const nfc = (s: string) => s.normalize("NFC");
+    const normalizeDish = (d: Dish): Dish => ({
+      ...d,
+      nameVi: nfc(d.nameVi),
+      nameEn: nfc(d.nameEn),
+      steps: d.steps.map(nfc),
+      imagePrompt: nfc(d.imagePrompt),
+    });
+    const normalizePlan = (p: MealPlan): MealPlan => ({
+      recommended: normalizeDish(p.recommended),
+      alternatives: p.alternatives.map(normalizeDish),
+      shoppingList: p.shoppingList.map((it) => ({
+        ...it,
+        name: nfc(it.name),
+        category: nfc(it.category),
+        quantity: it.quantity ? nfc(it.quantity) : it.quantity,
+      })),
+    });
+
     const tryParse = (text: string): MealPlan | null => {
       if (!text) return null;
       const cleaned = text
