@@ -49,7 +49,7 @@ function Landing() {
     setError(null);
     setPlan(null);
     try {
-      const result = await generate({ data: { ingredients: ing, garden: gard } });
+      const result = await generate({ data: { ingredients: ing, garden: gard, profile: profileToPromptBlock(profile) } });
       setPlan(result);
       setLastIngredients(ing);
       setLastGarden(gard);
