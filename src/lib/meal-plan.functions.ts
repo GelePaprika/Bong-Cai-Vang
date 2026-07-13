@@ -134,7 +134,7 @@ export const generateMealPlan = createServerFn({ method: "POST" })
     } catch (error) {
       if (NoObjectGeneratedError.isInstance(error)) {
         const parsed = tryParse(error.text ?? "");
-        if (parsed) return parsed;
+        if (parsed) return normalizePlan(parsed);
       }
       // Fallback: plain text generation, then extract JSON
       const { generateText } = await import("ai");
@@ -144,7 +144,7 @@ export const generateMealPlan = createServerFn({ method: "POST" })
         prompt,
       });
       const parsed = tryParse(text);
-      if (parsed) return parsed;
+      if (parsed) return normalizePlan(parsed);
       throw new Error(
         "The chef couldn't put together a plan this time. Try again with a slightly different ingredient list.",
       );
