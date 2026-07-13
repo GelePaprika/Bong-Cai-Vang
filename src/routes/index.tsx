@@ -96,12 +96,20 @@ function Landing() {
           <img src={logo} alt="" width={40} height={40} className="drop-shadow-sm" />
           <span className="font-serif text-xl">Bông Cải Vàng</span>
         </div>
-        <Link
-          to="/auth"
-          className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90"
-        >
-          Sign in
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/settings"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-accent"
+          >
+            <Settings className="h-4 w-4" /> Family profile
+          </Link>
+          <Link
+            to="/auth"
+            className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90"
+          >
+            Sign in
+          </Link>
+        </div>
       </header>
 
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-10 md:grid-cols-2 md:py-16">
