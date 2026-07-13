@@ -14,7 +14,9 @@ import {
   RefreshCw,
   Sprout,
   Settings,
+  Heart,
 } from "lucide-react";
+
 import { generateMealPlan, type MealPlan } from "@/lib/meal-plan.functions";
 import { MealPlanView, PlanSkeleton } from "@/components/MealPlanView";
 import { useFamilyProfile, profileToPromptBlock } from "@/lib/family-profile";
