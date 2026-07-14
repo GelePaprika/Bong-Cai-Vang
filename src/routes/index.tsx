@@ -39,6 +39,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const generate = useServerFn(generateMealPlan);
+  const scan = useServerFn(scanGarden);
   const { profile } = useFamilyProfile();
   const [ingredients, setIngredients] = useState("");
   const [garden, setGarden] = useState("");
@@ -47,7 +48,63 @@ function Landing() {
   const [error, setError] = useState<string | null>(null);
   const [lastIngredients, setLastIngredients] = useState<string>("");
   const [lastGarden, setLastGarden] = useState<string>("");
+  const [scanning, setScanning] = useState(false);
+  const [scanMsg, setScanMsg] = useState<string | null>(null);
+  const [scanError, setScanError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const resultRef = useRef<HTMLDivElement | null>(null);
+
+  const appendGardenItems = (items: string[]) => {
+    setGarden((prev) => {
+      const existing = prev
+        .split(/[\n,]+/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const lower = new Set(existing.map((s) => s.toLowerCase()));
+      const merged = [...existing];
+      for (const raw of items) {
+        const item = raw.trim();
+        if (!item) continue;
+        if (lower.has(item.toLowerCase())) continue;
+        lower.add(item.toLowerCase());
+        merged.push(item);
+      }
+      return merged.join("\n");
+    });
+  };
+
+  const handleScanFile = async (file: File) => {
+    if (!file) return;
+    if (file.size > 12 * 1024 * 1024) {
+      setScanError("That photo is a bit large — try one under 12 MB.");
+      return;
+    }
+    setScanError(null);
+    setScanning(true);
+    setScanMsg("🌱 Looking around your garden...");
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error("Couldn't read that image."));
+        reader.readAsDataURL(file);
+      });
+      const result = await scan({ data: { imageDataUrl: dataUrl } });
+      const found = result.ingredients ?? [];
+      appendGardenItems(found);
+      setScanMsg(
+        found.length === 0
+          ? "Garden Scout didn't spot any vegetables in that photo."
+          : `Garden Scout found ${found.length} ingredient${found.length === 1 ? "" : "s"}: ${found.join(", ")}.`,
+      );
+    } catch (e) {
+      setScanError(e instanceof Error ? e.message : "Garden Scout couldn't read that photo.");
+      setScanMsg(null);
+    } finally {
+      setScanning(false);
+    }
+  };
+
 
   // Prefill ingredients if arriving from "Cook again" on Favorites
   useEffect(() => {
