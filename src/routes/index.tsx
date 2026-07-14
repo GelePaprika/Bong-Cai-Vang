@@ -15,9 +15,11 @@ import {
   Sprout,
   Settings,
   Heart,
+  Camera,
 } from "lucide-react";
 
 import { generateMealPlan, type MealPlan } from "@/lib/meal-plan.functions";
+import { scanGarden } from "@/lib/garden-vision.functions";
 import { MealPlanView, PlanSkeleton } from "@/components/MealPlanView";
 import { useFamilyProfile, profileToPromptBlock } from "@/lib/family-profile";
 
