@@ -187,11 +187,18 @@ function Landing() {
             <Heart className="h-4 w-4 text-[color:var(--chili)]" /> Favorites
           </Link>
           <Link
+            to="/about"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-accent"
+          >
+            <Heart className="h-4 w-4 text-[color:var(--chili)]" /> About
+          </Link>
+          <Link
             to="/settings"
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-accent"
           >
             <Settings className="h-4 w-4" /> Family profile
           </Link>
+
 
           <Link
             to="/auth"
