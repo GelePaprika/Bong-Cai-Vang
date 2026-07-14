@@ -385,6 +385,76 @@ function WeeklyResults({
     if (!byCategory.has(key)) byCategory.set(key, []);
     byCategory.get(key)!.push(it);
   }
+  const categoryOrder = Array.from(byCategory.keys());
+  const flatItems = categoryOrder.flatMap((c) => byCategory.get(c)!);
+
+  const translate = useServerFn(translateShoppingList);
+  const [lang, setLang] = useState<ShoppingLang>("en");
+  const [catMap, setCatMap] = useState<Record<string, string>>({});
+  const [itemMap, setItemMap] = useState<Record<string, string>>({});
+  const [translating, setTranslating] = useState(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(SHOPPING_LANG_KEY) as ShoppingLang | null;
+      if (saved && LANG_OPTIONS.some((l) => l.code === saved)) setLang(saved);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (lang === "en") {
+      setCatMap({});
+      setItemMap({});
+      return;
+    }
+    if (flatItems.length === 0 && categoryOrder.length === 0) return;
+    setTranslating(true);
+    translate({
+      data: {
+        items: flatItems.map((i) => ({ name: i.name, category: i.category })),
+        categories: categoryOrder,
+        targetLang: lang,
+      },
+    })
+      .then((res) => {
+        if (cancelled) return;
+        const cm: Record<string, string> = {};
+        categoryOrder.forEach((c, i) => (cm[c] = res.categories[i] ?? c));
+        const im: Record<string, string> = {};
+        flatItems.forEach((it, i) => (im[`${it.category}|${it.name}`] = res.items[i] ?? it.name));
+        setCatMap(cm);
+        setItemMap(im);
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setCatMap({});
+        setItemMap({});
+      })
+      .finally(() => {
+        if (!cancelled) setTranslating(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lang, plan]);
+
+  const pickLang = (code: ShoppingLang) => {
+    setLang(code);
+    try {
+      localStorage.setItem(SHOPPING_LANG_KEY, code);
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const tCat = (c: string) => (lang === "en" ? c : catMap[c] ?? c);
+  const tItem = (c: string, n: string) =>
+    lang === "en" ? n : itemMap[`${c}|${n}`] ?? n;
+
 
   return (
     <div className="mt-6 grid gap-8 lg:grid-cols-[1fr_320px]">
