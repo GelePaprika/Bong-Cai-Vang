@@ -14,8 +14,17 @@ import {
 } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { generateWeeklyPlan, type WeeklyPlan } from "@/lib/weekly-plan.functions";
+import { translateShoppingList } from "@/lib/translate-shopping.functions";
 import { MealImage } from "@/components/MealImage";
 import { useFamilyProfile, profileToPromptBlock } from "@/lib/family-profile";
+
+type ShoppingLang = "en" | "nl" | "vi";
+const SHOPPING_LANG_KEY = "bcv:shopping-lang-v1";
+const LANG_OPTIONS: { code: ShoppingLang; flag: string; label: string }[] = [
+  { code: "en", flag: "🇬🇧", label: "English" },
+  { code: "nl", flag: "🇳🇱", label: "Nederlands" },
+  { code: "vi", flag: "🇻🇳", label: "Tiếng Việt" },
+];
 
 export const Route = createFileRoute("/weekly")({
   head: () => ({
