@@ -15,9 +15,11 @@ import {
   Sprout,
   Settings,
   Heart,
+  Camera,
 } from "lucide-react";
 
 import { generateMealPlan, type MealPlan } from "@/lib/meal-plan.functions";
+import { scanGarden } from "@/lib/garden-vision.functions";
 import { MealPlanView, PlanSkeleton } from "@/components/MealPlanView";
 import { useFamilyProfile, profileToPromptBlock } from "@/lib/family-profile";
 
@@ -37,6 +39,7 @@ export const Route = createFileRoute("/")({
 
 function Landing() {
   const generate = useServerFn(generateMealPlan);
+  const scan = useServerFn(scanGarden);
   const { profile } = useFamilyProfile();
   const [ingredients, setIngredients] = useState("");
   const [garden, setGarden] = useState("");
@@ -45,7 +48,63 @@ function Landing() {
   const [error, setError] = useState<string | null>(null);
   const [lastIngredients, setLastIngredients] = useState<string>("");
   const [lastGarden, setLastGarden] = useState<string>("");
+  const [scanning, setScanning] = useState(false);
+  const [scanMsg, setScanMsg] = useState<string | null>(null);
+  const [scanError, setScanError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const resultRef = useRef<HTMLDivElement | null>(null);
+
+  const appendGardenItems = (items: string[]) => {
+    setGarden((prev) => {
+      const existing = prev
+        .split(/[\n,]+/)
+        .map((s) => s.trim())
+        .filter(Boolean);
+      const lower = new Set(existing.map((s) => s.toLowerCase()));
+      const merged = [...existing];
+      for (const raw of items) {
+        const item = raw.trim();
+        if (!item) continue;
+        if (lower.has(item.toLowerCase())) continue;
+        lower.add(item.toLowerCase());
+        merged.push(item);
+      }
+      return merged.join("\n");
+    });
+  };
+
+  const handleScanFile = async (file: File) => {
+    if (!file) return;
+    if (file.size > 12 * 1024 * 1024) {
+      setScanError("That photo is a bit large — try one under 12 MB.");
+      return;
+    }
+    setScanError(null);
+    setScanning(true);
+    setScanMsg("🌱 Looking around your garden...");
+    try {
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = () => reject(new Error("Couldn't read that image."));
+        reader.readAsDataURL(file);
+      });
+      const result = await scan({ data: { imageDataUrl: dataUrl } });
+      const found = result.ingredients ?? [];
+      appendGardenItems(found);
+      setScanMsg(
+        found.length === 0
+          ? "Garden Scout didn't spot any vegetables in that photo."
+          : `Garden Scout found ${found.length} ingredient${found.length === 1 ? "" : "s"}: ${found.join(", ")}.`,
+      );
+    } catch (e) {
+      setScanError(e instanceof Error ? e.message : "Garden Scout couldn't read that photo.");
+      setScanMsg(null);
+    } finally {
+      setScanning(false);
+    }
+  };
+
 
   // Prefill ingredients if arriving from "Cook again" on Favorites
   useEffect(() => {
@@ -228,6 +287,41 @@ function Landing() {
               placeholder={"Pak choi\nMorning glory\nVietnamese basil\nMint, spring onion"}
               className="w-full resize-y rounded-xl border border-[color:var(--basil)]/30 bg-background p-3 font-mono text-sm leading-relaxed shadow-inner outline-none transition placeholder:text-muted-foreground/60 focus:border-[color:var(--basil)] focus:ring-2 focus:ring-[color:var(--basil)]/30"
             />
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                capture="environment"
+                className="hidden"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (f) handleScanFile(f);
+                  e.target.value = "";
+                }}
+              />
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={scanning}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--basil)]/40 bg-background px-3 py-1.5 text-xs font-semibold text-[color:var(--basil)] hover:bg-[color:var(--basil)]/10 disabled:opacity-60"
+              >
+                {scanning ? (
+                  <><RefreshCw className="h-3.5 w-3.5 animate-spin" /> Scanning garden…</>
+                ) : (
+                  <><Camera className="h-3.5 w-3.5" /> 📷 Harvest my garden today</>
+                )}
+              </button>
+              {scanMsg && !scanning && (
+                <span className="text-xs text-muted-foreground">{scanMsg}</span>
+              )}
+              {scanning && scanMsg && (
+                <span className="text-xs text-[color:var(--basil)]">{scanMsg}</span>
+              )}
+              {scanError && (
+                <span className="text-xs text-destructive">{scanError}</span>
+              )}
+            </div>
           </div>
 
           <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
