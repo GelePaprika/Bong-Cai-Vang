@@ -533,6 +533,43 @@ function WeeklyResults({
           <p className="mb-3 text-xs text-muted-foreground print:hidden">
             Only what you still need to buy — everything from "What we already have" is left out.
           </p>
+
+          <div className="mb-4 print:hidden">
+            <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Shopping list language
+            </div>
+            <div
+              role="radiogroup"
+              aria-label="Shopping list language"
+              className="flex flex-wrap gap-1.5"
+            >
+              {LANG_OPTIONS.map((opt) => {
+                const active = lang === opt.code;
+                return (
+                  <button
+                    key={opt.code}
+                    type="button"
+                    role="radio"
+                    aria-checked={active}
+                    onClick={() => pickLang(opt.code)}
+                    className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+                      active
+                        ? "border-[color:var(--basil)] bg-[color:var(--basil)]/15 text-[color:var(--basil)]"
+                        : "border-border bg-background hover:bg-accent"
+                    }`}
+                  >
+                    <span aria-hidden>{opt.flag}</span> {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+            {translating && lang !== "en" && (
+              <div className="mt-2 inline-flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                <RefreshCw className="h-3 w-3 animate-spin" /> Translating…
+              </div>
+            )}
+          </div>
+
           {plan.shoppingList.length === 0 ? (
             <div className="rounded-xl bg-muted p-3 text-sm text-muted-foreground">
               You already have everything for the week. 🎉
@@ -542,7 +579,7 @@ function WeeklyResults({
               {Array.from(byCategory.entries()).map(([cat, list]) => (
                 <div key={cat} className="shopping-block">
                   <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground print:text-sm print:text-black">
-                    {cat}
+                    {tCat(cat)}
                   </div>
                   <ul className="mt-1 divide-y divide-border">
                     {list.map((it, i) => (
@@ -555,7 +592,7 @@ function WeeklyResults({
                             aria-hidden
                             className="hidden h-4 w-4 rounded-sm border border-black print:inline-block"
                           />
-                          {it.name}
+                          {tItem(cat, it.name)}
                         </span>
                         {it.quantity && (
                           <span className="text-xs text-muted-foreground print:text-black">
@@ -570,6 +607,7 @@ function WeeklyResults({
             </div>
           )}
         </div>
+
       </aside>
     </div>
   );
