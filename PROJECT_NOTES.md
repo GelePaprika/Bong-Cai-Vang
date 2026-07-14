@@ -65,7 +65,7 @@ Shows "signal is aborted without reason" and displays the JSON tool call.
 
 ## Bug 002 – Visual recipe page runtime error
 
-**Status:** 🔄 Open
+**Status:** 🔄 Solve
 
 ### Sprint
 Sprint 2 – Visual Meal Planner
