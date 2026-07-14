@@ -4,47 +4,116 @@
 ## Project Vision
 An AI-powered family meal planner for Vietnamese and Dutch families.
 
+--
+# Version 1.0 Highlights
+
+- 🌼 AI-powered family meal planner
+- 🥗 Smart meal recommendations from available ingredients
+- 🌱 Garden Vision AI (photo recognition)
+- ❤️ Family Cookbook (Favourite recipes)
+- 👨‍👩‍👧‍👦 Family Profile with cooking preferences
+- 📅 Weekly Meal Planner
+- 🛒 Intelligent shopping list
+- 🌍 Multilingual shopping list
+- 🖨 Printable meal plans and shopping lists
+- 💾 Continue This Week (local persistence)
+  
 ---
 
 ## Completed
 
-## Session 1
+## Session 1 – Foundation
 - ✅ PRP completed
 - ✅ UI design completed
 - ✅ GitHub repository connected
 - ✅ Lovable project created
 - ✅ First working version generated
 
-## Session 2
+---
+
+## Session 2 – Homepage & Learning
 - ✅ Homepage redesigned with a warm Vietnamese family theme
 - ✅ Hero image improved
 - ✅ Learned GitHub project structure
 - ✅ Fixed image generation bug
-
-## Session 3
-- ✅ Homepage ingredient input added
-- ✅ One-click "Suggest Dinner" workflow implemented
-- ✅ Started transforming the application from a chatbot into a visual meal planner
+- ✅ Learned how to work with AI-generated code and GitHub
 
 ---
 
-## Features
+## Session 3 – AI Meal Planner
+- ✅ Homepage ingredient input added
+- ✅ One-click "Suggest Dinner" workflow implemented
+- ✅ Transformed the application from a chatbot into a visual meal planner
+- ✅ Beautiful recipe page with hero image, recipe summary and shopping list
+- ✅ Alternative meal suggestions implemented
+- ✅ Regenerate meal function added
 
-## Completed
-- [x] Homepage
-- [x] Vietnamese family hero section
-- [x] Ingredient input on homepage
-- [x] AI meal planning
-- [x] Image generation
-- [x] Multilingual support (Vietnamese, English, Dutch)
+---
 
-## In Progress
-- [ ] Visual recipe result page
-- [ ] Shopping list
-- [ ] Alternative meals
-- [ ] Weekly planner
-- [ ] Garden Today
-- [ ] Family preferences & memory
+## Session 4 – Family Experience
+- ✅ Family Profile page created
+- ✅ Family size preference
+- ✅ Favourite cuisines
+- ✅ Healthy cooking preferences
+- ✅ Dietary rules & dislikes
+- ✅ Weekly cooking rhythm
+- ✅ Save profile locally
+- ✅ Vietnamese font rendering significantly improved
+- ✅ Family Cookbook (Favourite recipes) implemented
+
+---
+
+## Session 5 – Garden Vision AI
+- ✅ Garden Today section enhanced
+- ✅ AI photo recognition for garden vegetables
+- ✅ Upload garden photo
+- ✅ AI detects harvested vegetables
+- ✅ Automatically merges detected vegetables with manual input
+- ✅ Duplicate ingredients are automatically avoided
+- ✅ First multimodal AI feature completed
+
+---
+
+## Session 6 – Weekly Planner
+- ✅ Weekly Meal Planner page created
+- ✅ Optional "What we already have" input
+- ✅ AI generates a complete 7-day meal plan
+- ✅ Reuses existing ingredients to reduce waste
+- ✅ Weekly shopping list generated automatically
+- ✅ Beautiful printable weekly planner layout
+- ✅ Printable shopping list
+- ✅ Continue This Week feature
+- ✅ Save one active weekly plan locally
+- ✅ Plan a New Week workflow
+
+---
+
+## Session 7 – Printing & Localization
+- ✅ Weekly Meal Plan PDF export
+- ✅ Shopping List PDF export
+- ✅ Shopping list language selector
+- ✅ Dutch shopping list translation
+- ✅ Vietnamese shopping list translation
+- ✅ Printer-friendly layouts optimized
+
+---
+
+# Learning Achievements
+
+Throughout this project I learned:
+
+- ✅ End-to-end AI product development
+- ✅ PRP-driven application design
+- ✅ Working with Lovable as an AI software engineer
+- ✅ GitHub version control
+- ✅ Modern web application structure
+- ✅ Supabase integration
+- ✅ Replit project import and deployment workflow
+- ✅ Debugging AI-generated applications
+- ✅ Prompt engineering for software development
+- ✅ Product thinking and feature prioritization
+- ✅ Building multimodal AI applications
+- ✅ Iterative software development with Generative AI
 
 ---
 
@@ -111,33 +180,6 @@ The UI navigation works correctly, suggesting the issue is in the meal planning 
 - The application fails while generating or returning the meal plan.
 - Further investigation of `meal-plan.functions.ts` is required.
 
-# Product Backlog
-
-## Sprint 1 ✅
-- Homepage
-- Hero section
-- Ingredient input
-- One-click meal planning
-
-## Sprint 2 🚧
-- Visual recipe page
-- Fix Bug 002
-- Recipe cards
-
-## Sprint 3
-- Shopping list
-- Missing ingredients
-- Printable shopping list
-
-## Sprint 4
-- Weekly meal planner
-- Calendar view
-
-## Sprint 5
-- Garden Today
-- Seasonal vegetables
-- Fish goal tracker
-
 ---
 
 # Lessons Learned
@@ -147,9 +189,95 @@ The UI navigation works correctly, suggesting the issue is in the meal planning 
 - Separating UI, navigation, and business logic makes debugging easier.
 - GitHub is valuable not only for storing code but also for documenting project progress and decisions.
 
-## Ideas
+# Product Backlog – Version 1.1
+## Enhancement #1 – Friendly PDF File Names
 
-- Garden Today
-- Weekly fish tracker
-- Leftover suggestions
-- Printable shopping list
+Priority: Low
+Status: Deferred to Version 1.1
+
+Current behavior
+
+Exported PDF files use generic filenames that are not easy to identify later.
+
+Desired behavior
+
+Automatically generate meaningful filenames.
+
+Weekly Meal Plan
+
+Bông Cải Vàng - Weekly Meal Plan - YYYY-MM-DD.pdf
+
+Example
+
+Bông Cải Vàng - Weekly Meal Plan - 2026-07-14.pdf
+
+Shopping List
+
+Bông Cải Vàng - Shopping List - YYYY-MM-DD.pdf
+
+Example
+
+Bông Cải Vàng - Shopping List - 2026-07-14.pdf
+Notes
+Use the system date.
+Use ISO date format (YYYY-MM-DD).
+Generate filenames automatically.
+No user input required.
+
+
+## Enhancement #2 – Complete English Shopping List
+
+Priority: Low
+Status: Deferred to Version 1.1
+
+Current behavior
+
+Shopping List Language works correctly.
+
+Dutch displays Dutch ingredient names.
+
+Vietnamese displays Vietnamese ingredient names.
+
+English still displays:
+
+Thịt ba chỉ (Pork belly)
+
+instead of
+
+Pork belly
+Desired behavior
+
+Shopping List Language should completely determine the displayed language.
+
+Vietnamese
+
+Thịt ba chỉ
+Đậu phụ
+Cà chua
+
+English
+
+Pork belly
+Tofu
+Tomatoes
+
+Dutch
+
+Speklappen
+Tofu
+Tomaten
+
+No mixed-language labels.
+
+No parentheses.
+
+Applies to
+Shopping List panel
+Printed Shopping List
+Exported Shopping List PDF
+
+Recipe pages should remain unchanged (Vietnamese title + English subtitle).
+
+Future Improvement
+
+Use a fixed multilingual ingredient dictionary instead of AI-generated translations to ensure consistent terminology.
