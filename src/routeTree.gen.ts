@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WeeklyRouteImport } from './routes/weekly'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as FavoritesRouteImport } from './routes/favorites'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -20,6 +21,11 @@ import { Route as AuthenticatedPlanRouteImport } from './routes/_authenticated/p
 import { Route as AuthenticatedChatIndexRouteImport } from './routes/_authenticated/chat.index'
 import { Route as AuthenticatedChatThreadIdRouteImport } from './routes/_authenticated/chat.$threadId'
 
+const WeeklyRoute = WeeklyRouteImport.update({
+  id: '/weekly',
+  path: '/weekly',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -76,6 +82,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/favorites': typeof FavoritesRoute
   '/settings': typeof SettingsRoute
+  '/weekly': typeof WeeklyRoute
   '/plan': typeof AuthenticatedPlanRoute
   '/api/chat': typeof ApiChatRoute
   '/api/generate-meal-image': typeof ApiGenerateMealImageRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/favorites': typeof FavoritesRoute
   '/settings': typeof SettingsRoute
+  '/weekly': typeof WeeklyRoute
   '/plan': typeof AuthenticatedPlanRoute
   '/api/chat': typeof ApiChatRoute
   '/api/generate-meal-image': typeof ApiGenerateMealImageRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/favorites': typeof FavoritesRoute
   '/settings': typeof SettingsRoute
+  '/weekly': typeof WeeklyRoute
   '/_authenticated/plan': typeof AuthenticatedPlanRoute
   '/api/chat': typeof ApiChatRoute
   '/api/generate-meal-image': typeof ApiGenerateMealImageRoute
@@ -113,6 +122,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/favorites'
     | '/settings'
+    | '/weekly'
     | '/plan'
     | '/api/chat'
     | '/api/generate-meal-image'
@@ -124,6 +134,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/favorites'
     | '/settings'
+    | '/weekly'
     | '/plan'
     | '/api/chat'
     | '/api/generate-meal-image'
@@ -136,6 +147,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/favorites'
     | '/settings'
+    | '/weekly'
     | '/_authenticated/plan'
     | '/api/chat'
     | '/api/generate-meal-image'
@@ -149,12 +161,20 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   FavoritesRoute: typeof FavoritesRoute
   SettingsRoute: typeof SettingsRoute
+  WeeklyRoute: typeof WeeklyRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiGenerateMealImageRoute: typeof ApiGenerateMealImageRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/weekly': {
+      id: '/weekly'
+      path: '/weekly'
+      fullPath: '/weekly'
+      preLoaderRoute: typeof WeeklyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -249,6 +269,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   FavoritesRoute: FavoritesRoute,
   SettingsRoute: SettingsRoute,
+  WeeklyRoute: WeeklyRoute,
   ApiChatRoute: ApiChatRoute,
   ApiGenerateMealImageRoute: ApiGenerateMealImageRoute,
 }

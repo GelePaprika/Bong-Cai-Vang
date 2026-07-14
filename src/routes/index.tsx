@@ -16,6 +16,7 @@ import {
   Settings,
   Heart,
   Camera,
+  CalendarDays,
 } from "lucide-react";
 
 import { generateMealPlan, type MealPlan } from "@/lib/meal-plan.functions";
