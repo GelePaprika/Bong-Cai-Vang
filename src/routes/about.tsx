@@ -135,7 +135,7 @@ function AboutPage() {
             <p>
               Bông Cải Vàng is still growing, just like my garden. Every new feature comes from something I genuinely wanted to solve in my own kitchen. If it helps another family spend a little less time planning, waste a little less food and enjoy a few more meals together, then this little project has already done more than I hoped for.
             </p>
-            <p className="pt-2 font-serif text-lg text-[color:var(--chili)]">
+            <p className="pt-2 font-vi text-lg text-[color:var(--forest)]">
               ❤️ Happy cooking, and thank you for visiting Bông Cải Vàng.
             </p>
           </div>
