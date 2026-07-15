@@ -317,7 +317,7 @@ function Landing() {
           <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
             <Sparkles className="h-3.5 w-3.5" /> <span className="font-vi">Mẹ's</span> kitchen helper
           </span>
-          <h1 className="mt-4 text-4xl leading-[1.05] md:text-6xl">
+          <h1 className="mt-4 text-4xl leading-[1.05] md:text-5xl">
             <span className="font-vi">Bữa cơm gia đình,</span>
             <br />
             <span className="text-[color:var(--chili)]">planned with love.</span>
