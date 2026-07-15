@@ -129,6 +129,11 @@ function Landing() {
 
   const handleScanFile = async (file: File) => {
     if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setScanError("Please upload a clear photo of vegetables or herbs from your garden.");
+      setScanMsg(null);
+      return;
+    }
     if (file.size > 12 * 1024 * 1024) {
       setScanError("That photo is a bit large — try one under 12 MB.");
       return;
@@ -140,7 +145,7 @@ function Landing() {
       const dataUrl = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result as string);
-        reader.onerror = () => reject(new Error("Couldn't read that image."));
+        reader.onerror = () => reject(new Error("Please upload a clear photo of vegetables or herbs from your garden."));
         reader.readAsDataURL(file);
       });
       const result = await scan({ data: { imageDataUrl: dataUrl } });
@@ -148,16 +153,17 @@ function Landing() {
       appendGardenItems(found);
       setScanMsg(
         found.length === 0
-          ? "Garden Scout didn't spot any vegetables in that photo."
+          ? "I couldn't recognize any vegetables in this photo. Try taking a brighter photo or placing the vegetables on a plain background."
           : `Garden Scout found ${found.length} ingredient${found.length === 1 ? "" : "s"}: ${found.join(", ")}.`,
       );
-    } catch (e) {
-      setScanError(e instanceof Error ? e.message : "Garden Scout couldn't read that photo.");
+    } catch {
+      setScanError("I couldn't read that photo. Try a clearer, well-lit shot of your garden.");
       setScanMsg(null);
     } finally {
       setScanning(false);
     }
   };
+
 
 
   // Prefill ingredients if arriving from "Cook again" on Favorites
