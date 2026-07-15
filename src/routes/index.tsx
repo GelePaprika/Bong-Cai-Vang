@@ -441,14 +441,44 @@ function Landing() {
                 )}
               </button>
               {scanMsg && !scanning && (
-                <span className="text-xs text-muted-foreground">{scanMsg}</span>
+                <div className="flex w-full flex-wrap items-center gap-2">
+                  <span className="text-xs text-muted-foreground">{scanMsg}</span>
+                  {scanMsg.startsWith("I couldn't recognize") && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="rounded-full border border-[color:var(--basil)]/40 bg-background px-2.5 py-1 text-[11px] font-semibold text-[color:var(--basil)] hover:bg-[color:var(--basil)]/10"
+                      >
+                        Try another photo
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setScanMsg(null)}
+                        className="rounded-full border border-border bg-card px-2.5 py-1 text-[11px] font-medium hover:bg-accent"
+                      >
+                        Continue without Garden Scan
+                      </button>
+                    </>
+                  )}
+                </div>
               )}
               {scanning && scanMsg && (
                 <span className="text-xs text-[color:var(--basil)]">{scanMsg}</span>
               )}
               {scanError && (
-                <span className="text-xs text-destructive">{scanError}</span>
+                <div className="flex w-full flex-wrap items-center gap-2">
+                  <span className="text-xs text-destructive">{scanError}</span>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="rounded-full border border-[color:var(--basil)]/40 bg-background px-2.5 py-1 text-[11px] font-semibold text-[color:var(--basil)] hover:bg-[color:var(--basil)]/10"
+                  >
+                    Try another photo
+                  </button>
+                </div>
               )}
+
             </div>
           </div>
 
