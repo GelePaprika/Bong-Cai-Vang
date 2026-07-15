@@ -25,6 +25,23 @@ import { MealPlanView, PlanSkeleton } from "@/components/MealPlanView";
 import { useFamilyProfile, profileToPromptBlock } from "@/lib/family-profile";
 
 const PENDING_KEY = "bcv:pendingIngredients";
+const LANG_KEY = "bcv:recipeLang";
+const DIFF_KEY = "bcv:cookDifficulty";
+
+type RecipeLang = "en" | "nl" | "vi";
+type Difficulty = "easy" | "medium" | "chef";
+
+const LANG_OPTIONS: { value: RecipeLang; label: string }[] = [
+  { value: "en", label: "🇬🇧 English" },
+  { value: "nl", label: "🇳🇱 Nederlands" },
+  { value: "vi", label: "🇻🇳 Tiếng Việt" },
+];
+
+const DIFF_OPTIONS: { value: Difficulty; label: string }[] = [
+  { value: "easy", label: "🟢 Easy" },
+  { value: "medium", label: "🟡 Medium" },
+  { value: "chef", label: "🔴 Chef's Challenge" },
+];
 
 function normalizeIngredients(raw: string): string {
   return raw
@@ -54,6 +71,37 @@ function Landing() {
   const [scanError, setScanError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const resultRef = useRef<HTMLDivElement | null>(null);
+  const [language, setLanguage] = useState<RecipeLang>("en");
+  const [difficulty, setDifficulty] = useState<Difficulty>("easy");
+
+  // Load saved preferences
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem(LANG_KEY);
+      if (l === "en" || l === "nl" || l === "vi") setLanguage(l);
+      const d = localStorage.getItem(DIFF_KEY);
+      if (d === "easy" || d === "medium" || d === "chef") setDifficulty(d);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const updateLanguage = (v: RecipeLang) => {
+    setLanguage(v);
+    try {
+      localStorage.setItem(LANG_KEY, v);
+    } catch {
+      /* ignore */
+    }
+  };
+  const updateDifficulty = (v: Difficulty) => {
+    setDifficulty(v);
+    try {
+      localStorage.setItem(DIFF_KEY, v);
+    } catch {
+      /* ignore */
+    }
+  };
 
   const appendGardenItems = (items: string[]) => {
     setGarden((prev) => {
@@ -126,7 +174,7 @@ function Landing() {
     setError(null);
     setPlan(null);
     try {
-      const result = await generate({ data: { ingredients: ing, garden: gard, profile: profileToPromptBlock(profile) } });
+      const result = await generate({ data: { ingredients: ing, garden: gard, profile: profileToPromptBlock(profile), language, difficulty } });
       setPlan(result);
       setLastIngredients(ing);
       setLastGarden(gard);
@@ -335,6 +383,55 @@ function Landing() {
               {scanError && (
                 <span className="text-xs text-destructive">{scanError}</span>
               )}
+            </div>
+          </div>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <h3 className="mb-2 text-sm font-semibold">🌍 Recipe Language</h3>
+              <div className="flex flex-wrap gap-2">
+                {LANG_OPTIONS.map((opt) => {
+                  const active = language === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => updateLanguage(opt.value)}
+                      className={
+                        "rounded-full border px-4 py-1.5 text-sm font-medium transition " +
+                        (active
+                          ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                          : "border-border bg-card hover:bg-accent")
+                      }
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <div>
+              <h3 className="mb-2 text-sm font-semibold">👩‍🍳 Cooking Difficulty</h3>
+              <div className="flex flex-wrap gap-2">
+                {DIFF_OPTIONS.map((opt) => {
+                  const active = difficulty === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => updateDifficulty(opt.value)}
+                      className={
+                        "rounded-full border px-4 py-1.5 text-sm font-medium transition " +
+                        (active
+                          ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                          : "border-border bg-card hover:bg-accent")
+                      }
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
           </div>
 

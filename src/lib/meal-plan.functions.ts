@@ -74,6 +74,8 @@ export const generateMealPlan = createServerFn({ method: "POST" })
         ingredients: z.string().min(1),
         garden: z.string().optional().default(""),
         profile: z.string().optional().default(""),
+        language: z.enum(["en", "nl", "vi"]).optional().default("en"),
+        difficulty: z.enum(["easy", "medium", "chef"]).optional().default("easy"),
       })
       .parse(d),
   )
@@ -87,7 +89,16 @@ export const generateMealPlan = createServerFn({ method: "POST" })
       ? `\n\n🌱 Harvested from the family garden TODAY (PRIORITIZE these first to avoid food waste — try to feature at least one in the recommended dish):\n${data.garden}`
       : "";
     const profileBlock = data.profile.trim() ? `\n\n${data.profile}` : "";
-    const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}${gardenBlock}${profileBlock}\n\nPlan tonight's family dinner. Return JSON only.`;
+    const langName =
+      data.language === "vi" ? "Vietnamese (Tiếng Việt)" : data.language === "nl" ? "Dutch (Nederlands)" : "English";
+    const langBlock = `\n\nOUTPUT LANGUAGE: Write ALL user-facing generated content in ${langName} — the "nameEn" field (dish title/subtitle in ${langName}), the "steps" (cooking instructions), and the "shoppingList" item names and categories. ALWAYS keep "nameVi" in authentic Vietnamese with full diacritics regardless of language. Keep "imagePrompt" in English (for the image model).`;
+    const difficultyBlock =
+      data.difficulty === "chef"
+        ? `\n\nCOOKING DIFFICULTY: Chef's Challenge — advanced traditional family dishes or restaurant-quality meals, up to ~60 minutes, multiple cooking techniques. Set every dish "difficulty" field to "Hard".`
+        : data.difficulty === "medium"
+          ? `\n\nCOOKING DIFFICULTY: Medium — around 30-45 minutes, moderate cooking skills, more techniques. Set every dish "difficulty" field to "Medium".`
+          : `\n\nCOOKING DIFFICULTY: Easy — beginner friendly, simple recipes, around 20-30 minutes, suitable for kids and teenagers learning to cook. Set every dish "difficulty" field to "Easy".`;
+    const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}${gardenBlock}${profileBlock}${langBlock}${difficultyBlock}\n\nPlan tonight's family dinner. Return JSON only.`;
 
     const nfc = (s: string) => s.normalize("NFC");
     const normalizeDish = (d: Dish): Dish => ({
