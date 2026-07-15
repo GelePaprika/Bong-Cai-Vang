@@ -117,7 +117,7 @@ function FavoritesPage() {
 
       <section className="mx-auto max-w-6xl px-6 pt-4">
         <h1 className="font-serif text-4xl md:text-5xl">
-          <span className="font-vi">Sách bếp gia đình</span>
+          <span className="font-vi">Menu gia đình</span>
         </h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
           A growing cookbook of recipes your family loves. Save any dish with the heart, then come
