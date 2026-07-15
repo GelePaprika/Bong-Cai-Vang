@@ -30,7 +30,7 @@ function AboutPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 md:px-6">
           <Link to="/" className="flex items-center gap-2">
             <img src={logo} alt="" width={32} height={32} />
-            <span className="font-serif text-lg leading-none">Bông Cải Vàng</span>
+            <span className="font-be-vietnam text-lg leading-none">Bông Cải Vàng</span>
           </Link>
           <Link
             to="/"
@@ -46,7 +46,7 @@ function AboutPage() {
           <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
             <Heart className="h-3.5 w-3.5" /> From my kitchen to yours
           </span>
-          <h1 className="mt-5 font-serif text-4xl leading-[1.1] md:text-5xl">
+          <h1 className="mt-5 font-be-vietnam text-4xl leading-[1.1] md:text-5xl">
             About Bông Cải Vàng
           </h1>
           <p className="mt-3 text-lg text-muted-foreground">
@@ -67,7 +67,7 @@ function AboutPage() {
         <section className="mt-14 space-y-5">
           <div className="flex items-start gap-3">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/20 text-[color:var(--chili)]">
-              <span className="text-lg">👋</span>
+              <span className="text-lg"></span>
             </div>
             <h2 className="pt-1 font-serif text-2xl">Hi!</h2>
           </div>
