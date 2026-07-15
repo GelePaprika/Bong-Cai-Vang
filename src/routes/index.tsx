@@ -17,7 +17,10 @@ import {
   Heart,
   Camera,
   CalendarDays,
+  Menu,
+  X,
 } from "lucide-react";
+
 
 import { generateMealPlan, type MealPlan } from "@/lib/meal-plan.functions";
 import { scanGarden } from "@/lib/garden-vision.functions";
