@@ -329,9 +329,8 @@ function Landing() {
             <span className="text-[color:var(--chili)]">planned with love.</span>
           </h1>
           <p className="mt-5 max-w-md text-base text-muted-foreground md:text-lg">
-            Bông Cải Vàng is your warm AI kitchen companion for Vietnamese family dinners.
-            Tell me what's in your fridge — I'll build a wholesome menu, a photo for every
-            dish, and a grocery list for whatever you need to bring home.
+            Let's make dinner a little easier and a little more fun.
+            Tell Bông Cải Vàng what's in your fridge or garden, and discover delicious meals your family will enjoy, easy recipes, and a shopping list for anything you still need.
           </p>
           <div className="mt-7 flex flex-wrap gap-3">
             <a
