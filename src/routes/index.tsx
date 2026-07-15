@@ -40,7 +40,7 @@ const LANG_OPTIONS: { value: RecipeLang; label: string }[] = [
 const DIFF_OPTIONS: { value: Difficulty; label: string }[] = [
   { value: "easy", label: "🟢 Easy" },
   { value: "medium", label: "🟡 Medium" },
-  { value: "chef", label: "🔴 Chef's Challenge" },
+  { value: "chef", label: "🔴 Challenge" },
 ];
 
 function normalizeIngredients(raw: string): string {
@@ -412,7 +412,7 @@ function Landing() {
             </div>
             <div>
               <h3 className="mb-2 text-sm font-semibold">👩‍🍳 Cooking Difficulty</h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-2 sm:flex-nowrap">
                 {DIFF_OPTIONS.map((opt) => {
                   const active = difficulty === opt.value;
                   return (
@@ -421,7 +421,7 @@ function Landing() {
                       type="button"
                       onClick={() => updateDifficulty(opt.value)}
                       className={
-                        "rounded-full border px-4 py-1.5 text-sm font-medium transition " +
+                        "flex-1 min-w-[5.5rem] rounded-full border px-3 py-1.5 text-center text-sm font-medium transition " +
                         (active
                           ? "border-primary bg-primary text-primary-foreground shadow-sm"
                           : "border-border bg-card hover:bg-accent")
