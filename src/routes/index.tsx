@@ -386,6 +386,55 @@ function Landing() {
             </div>
           </div>
 
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div>
+              <h3 className="mb-2 text-sm font-semibold">🌍 Recipe Language</h3>
+              <div className="flex flex-wrap gap-2">
+                {LANG_OPTIONS.map((opt) => {
+                  const active = language === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => updateLanguage(opt.value)}
+                      className={
+                        "rounded-full border px-4 py-1.5 text-sm font-medium transition " +
+                        (active
+                          ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                          : "border-border bg-card hover:bg-accent")
+                      }
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+            <div>
+              <h3 className="mb-2 text-sm font-semibold">👩‍🍳 Cooking Difficulty</h3>
+              <div className="flex flex-wrap gap-2">
+                {DIFF_OPTIONS.map((opt) => {
+                  const active = difficulty === opt.value;
+                  return (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => updateDifficulty(opt.value)}
+                      className={
+                        "rounded-full border px-4 py-1.5 text-sm font-medium transition " +
+                        (active
+                          ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                          : "border-border bg-card hover:bg-accent")
+                      }
+                    >
+                      {opt.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
           <div className="mt-5 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
             <p className="text-xs text-muted-foreground">
               🌿 Tip: mix Vietnamese and English names — "cá basa, rau muống, tomatoes" works great.
