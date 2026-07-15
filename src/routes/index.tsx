@@ -171,7 +171,7 @@ function Landing() {
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <div className="flex items-center gap-2">
           <img src={logo} alt="" width={40} height={40} className="drop-shadow-sm" />
-          <span className="font-serif text-xl">Bông Cải Vàng</span>
+          <span className="font-vi text-xl">Bông Cải Vàng</span>
         </div>
         <div className="flex items-center gap-2">
           <Link
