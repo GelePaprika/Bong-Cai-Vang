@@ -222,12 +222,12 @@ function Landing() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-        <div className="flex items-center gap-2">
-          <img src={logo} alt="" width={40} height={40} className="drop-shadow-sm" />
-          <span className="font-vi text-xl">Bông Cải Vàng</span>
+      <header className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-6 py-5">
+        <div className="flex min-w-0 items-center gap-2">
+          <img src={logo} alt="" width={40} height={40} className="shrink-0 drop-shadow-sm" />
+          <span className="font-vi truncate text-xl">Bông Cải Vàng</span>
         </div>
-        <div className="flex items-center gap-2">
+        <nav className="hidden items-center gap-2 md:flex">
           <Link
             to="/weekly"
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-accent"
@@ -252,16 +252,65 @@ function Landing() {
           >
             <Settings className="h-4 w-4" /> Family profile
           </Link>
-
-
           <Link
             to="/auth"
             className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90"
           >
             Sign in
           </Link>
-        </div>
+        </nav>
+        <button
+          type="button"
+          onClick={() => setMobileMenuOpen((v) => !v)}
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileMenuOpen}
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground hover:bg-accent md:hidden"
+        >
+          {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
       </header>
+      {mobileMenuOpen && (
+        <div className="mx-auto max-w-6xl px-6 pb-4 md:hidden">
+          <div className="flex flex-col gap-2 rounded-3xl border border-border bg-card p-4 shadow-lg">
+            <Link
+              to="/weekly"
+              onClick={() => setMobileMenuOpen(false)}
+              className="inline-flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-3 text-sm font-medium hover:bg-accent"
+            >
+              <CalendarDays className="h-4 w-4 text-[color:var(--chili)]" /> Weekly planner
+            </Link>
+            <Link
+              to="/favorites"
+              onClick={() => setMobileMenuOpen(false)}
+              className="inline-flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-3 text-sm font-medium hover:bg-accent"
+            >
+              <Heart className="h-4 w-4 text-[color:var(--chili)]" /> Favorites
+            </Link>
+            <Link
+              to="/about"
+              onClick={() => setMobileMenuOpen(false)}
+              className="inline-flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-3 text-sm font-medium hover:bg-accent"
+            >
+              <Heart className="h-4 w-4 text-[color:var(--chili)]" /> About
+            </Link>
+            <Link
+              to="/settings"
+              onClick={() => setMobileMenuOpen(false)}
+              className="inline-flex items-center gap-2 rounded-2xl border border-border bg-background px-4 py-3 text-sm font-medium hover:bg-accent"
+            >
+              <Settings className="h-4 w-4" /> Family profile
+            </Link>
+            <Link
+              to="/auth"
+              onClick={() => setMobileMenuOpen(false)}
+              className="inline-flex items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90"
+            >
+              Sign in
+            </Link>
+          </div>
+        </div>
+      )}
+
 
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-10 md:grid-cols-2 md:py-16">
         <div>
