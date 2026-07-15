@@ -25,6 +25,23 @@ import { MealPlanView, PlanSkeleton } from "@/components/MealPlanView";
 import { useFamilyProfile, profileToPromptBlock } from "@/lib/family-profile";
 
 const PENDING_KEY = "bcv:pendingIngredients";
+const LANG_KEY = "bcv:recipeLang";
+const DIFF_KEY = "bcv:cookDifficulty";
+
+type RecipeLang = "en" | "nl" | "vi";
+type Difficulty = "easy" | "medium" | "chef";
+
+const LANG_OPTIONS: { value: RecipeLang; label: string }[] = [
+  { value: "en", label: "🇬🇧 English" },
+  { value: "nl", label: "🇳🇱 Nederlands" },
+  { value: "vi", label: "🇻🇳 Tiếng Việt" },
+];
+
+const DIFF_OPTIONS: { value: Difficulty; label: string }[] = [
+  { value: "easy", label: "🟢 Easy" },
+  { value: "medium", label: "🟡 Medium" },
+  { value: "chef", label: "🔴 Chef's Challenge" },
+];
 
 function normalizeIngredients(raw: string): string {
   return raw
