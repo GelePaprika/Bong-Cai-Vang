@@ -46,7 +46,7 @@ function AboutPage() {
           <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
             <Heart className="h-3.5 w-3.5" /> From my kitchen to yours
           </span>
-          <h1 className="mt-5 font-be-vietnam text-4xl leading-[1.1] md:text-5xl">
+          <h1 className="mt-5 font-vi text-4xl leading-[1.1] md:text-5xl">
             About Bông Cải Vàng
           </h1>
           <p className="mt-3 text-lg text-muted-foreground">
