@@ -196,9 +196,10 @@ function Landing() {
   const handleSuggest = async () => {
     const normalized = normalizeIngredients(ingredients);
     const normalizedGarden = normalizeIngredients(garden);
-    if (!normalized && !normalizedGarden) return;
-    await runPlan(normalized || normalizedGarden, normalizedGarden);
+    await runPlan(normalized, normalizedGarden);
   };
+
+  const noIngredientsEntered = !ingredients.trim() && !garden.trim();
 
   const openInChat = () => {
     const ing = lastIngredients || normalizeIngredients(ingredients);
