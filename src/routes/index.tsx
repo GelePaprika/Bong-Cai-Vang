@@ -174,7 +174,7 @@ function Landing() {
     setError(null);
     setPlan(null);
     try {
-      const result = await generate({ data: { ingredients: ing, garden: gard, profile: profileToPromptBlock(profile) } });
+      const result = await generate({ data: { ingredients: ing, garden: gard, profile: profileToPromptBlock(profile), language, difficulty } });
       setPlan(result);
       setLastIngredients(ing);
       setLastGarden(gard);
