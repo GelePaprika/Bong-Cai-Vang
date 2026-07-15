@@ -621,12 +621,12 @@ function Landing() {
         <Feature
           icon={<Leaf className="h-5 w-5" />}
           title="Cook from your fridge"
-          body="Type the ingredients you already have — gà, cá, rau muống, tỏi, nước mắm — and I'll build a menu around them."
+          body="Type the ingredients you already have (gà, cá, rau muống, tỏi, nước mắm...) and I'll build a menu around them."
         />
         <Feature
           icon={<Globe2 className="h-5 w-5" />}
           title="Vietnamese, Dutch or English"
-          body="Chat in your language. Dish names stay true to Vietnamese — canh chua cá lóc, rau muống xào tỏi, thịt kho tộ — with a friendly translation."
+          body="Chat in your language. Dish names stay true to Vietnamese (canh chua cá lóc, rau muống xào tỏi, thịt kho tộ...) with a friendly translation."
         />
         <Feature
           icon={<ShoppingBasket className="h-5 w-5" />}
