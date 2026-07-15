@@ -69,7 +69,7 @@ function AuthPage() {
       <div className="w-full max-w-md rounded-3xl border border-border bg-card p-8 shadow-lg">
         <div className="flex flex-col items-center text-center">
           <img src={logo} alt="" width={64} height={64} />
-          <h1 className="mt-3 font-serif text-3xl">Bông Cải Vàng</h1>
+          <h1 className="mt-3 font-vi text-3xl">Bông Cải Vàng</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             {mode === "signin"
               ? "Welcome back to your family kitchen"
