@@ -75,17 +75,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Bông Cải Vàng — AI family meal planner" },
+      { title: "Bông Cải Vàng" },
       {
         name: "description",
         content:
-          "Warm AI dinner planner for busy Vietnamese-Dutch families. Turn what's in your fridge into delicious weekly menus with a smart grocery list.",
+          "Warm dinner planner for busy Vietnamese-Dutch families. Turn what's in your fridge into delicious weekly menus with a smart grocery list.",
       },
-      { property: "og:title", content: "Bông Cải Vàng — AI family meal planner" },
+      { property: "og:title", content: "Bông Cải Vàng" },
       {
         property: "og:description",
         content:
-          "Plan tonight's dinner from your fridge. Vietnamese, Asian and Italian family recipes with an AI chef.",
+          "Plan tonight's dinner from your fridge. Vietnamese, Asian and Italian family recipes.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
