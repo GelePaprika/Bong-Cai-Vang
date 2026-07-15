@@ -188,7 +188,7 @@ function WeeklyPage() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 md:px-6">
           <Link to="/" className="flex items-center gap-2">
             <img src={logo} alt="" width={32} height={32} />
-            <span className="font-serif text-lg leading-none">Bông Cải Vàng</span>
+            <span className="font-vi text-lg leading-none">Bông Cải Vàng</span>
           </Link>
           <Link
             to="/"
