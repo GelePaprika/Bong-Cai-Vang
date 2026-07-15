@@ -71,6 +71,37 @@ function Landing() {
   const [scanError, setScanError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const resultRef = useRef<HTMLDivElement | null>(null);
+  const [language, setLanguage] = useState<RecipeLang>("en");
+  const [difficulty, setDifficulty] = useState<Difficulty>("easy");
+
+  // Load saved preferences
+  useEffect(() => {
+    try {
+      const l = localStorage.getItem(LANG_KEY);
+      if (l === "en" || l === "nl" || l === "vi") setLanguage(l);
+      const d = localStorage.getItem(DIFF_KEY);
+      if (d === "easy" || d === "medium" || d === "chef") setDifficulty(d);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const updateLanguage = (v: RecipeLang) => {
+    setLanguage(v);
+    try {
+      localStorage.setItem(LANG_KEY, v);
+    } catch {
+      /* ignore */
+    }
+  };
+  const updateDifficulty = (v: Difficulty) => {
+    setDifficulty(v);
+    try {
+      localStorage.setItem(DIFF_KEY, v);
+    } catch {
+      /* ignore */
+    }
+  };
 
   const appendGardenItems = (items: string[]) => {
     setGarden((prev) => {
