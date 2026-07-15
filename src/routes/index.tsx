@@ -196,9 +196,10 @@ function Landing() {
   const handleSuggest = async () => {
     const normalized = normalizeIngredients(ingredients);
     const normalizedGarden = normalizeIngredients(garden);
-    if (!normalized && !normalizedGarden) return;
-    await runPlan(normalized || normalizedGarden, normalizedGarden);
+    await runPlan(normalized, normalizedGarden);
   };
+
+  const noIngredientsEntered = !ingredients.trim() && !garden.trim();
 
   const openInChat = () => {
     const ing = lastIngredients || normalizeIngredients(ingredients);
@@ -325,6 +326,11 @@ function Landing() {
             placeholder={"Chicken\nTomatoes\nPak choi\nCarrots\nGinger, garlic, spring onion"}
             className="w-full resize-y rounded-2xl border border-border bg-background p-4 font-mono text-base leading-relaxed shadow-inner outline-none transition placeholder:text-muted-foreground/60 focus:border-primary focus:ring-2 focus:ring-primary/30"
           />
+          {noIngredientsEntered && (
+            <p className="mt-3 text-sm text-muted-foreground">
+              No ingredients entered. I'll suggest a meal based on your family preferences and selected cooking options.
+            </p>
+          )}
 
           <div className="mt-6 rounded-2xl border border-[color:var(--basil)]/30 bg-[color:var(--basil)]/5 p-5">
             <div className="mb-3 flex items-start gap-3">
@@ -442,7 +448,7 @@ function Landing() {
             <button
               type="button"
               onClick={handleSuggest}
-              disabled={loading || (!ingredients.trim() && !garden.trim())}
+              disabled={loading}
               className="inline-flex items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-primary-foreground shadow-lg transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? (

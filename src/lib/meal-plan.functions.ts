@@ -71,7 +71,7 @@ export const generateMealPlan = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z
       .object({
-        ingredients: z.string().min(1),
+        ingredients: z.string().optional().default(""),
         garden: z.string().optional().default(""),
         profile: z.string().optional().default(""),
         language: z.enum(["en", "nl", "vi"]).optional().default("en"),
@@ -85,10 +85,18 @@ export const generateMealPlan = createServerFn({ method: "POST" })
     const gateway = createLovableAiGatewayProvider(key);
     const model = gateway("google/gemini-3-flash-preview");
 
-    const gardenBlock = data.garden.trim()
+    const hasIngredients = data.ingredients.trim().length > 0;
+    const hasGarden = data.garden.trim().length > 0;
+    const ingredientsBlock = hasIngredients
+      ? `Ingredients available in the fridge/pantry:\n${data.ingredients}`
+      : "No specific ingredients were provided. Treat this as a request for meal inspiration.";
+    const gardenBlock = hasGarden
       ? `\n\n🌱 Harvested from the family garden TODAY (PRIORITIZE these first to avoid food waste — try to feature at least one in the recommended dish):\n${data.garden}`
       : "";
     const profileBlock = data.profile.trim() ? `\n\n${data.profile}` : "";
+    const inspirationBlock = !hasIngredients && !hasGarden
+      ? "\n\nGenerate a balanced, wholesome dinner recommendation that suits the family's tastes, dietary rules, and weekly rhythm. You may suggest a small shopping list for any missing items."
+      : "";
     const langName =
       data.language === "vi" ? "Vietnamese (Tiếng Việt)" : data.language === "nl" ? "Dutch (Nederlands)" : "English";
     const langBlock = `\n\nOUTPUT LANGUAGE: Write ALL user-facing generated content in ${langName} — the "nameEn" field (dish title/subtitle in ${langName}), the "steps" (cooking instructions), and the "shoppingList" item names and categories. ALWAYS keep "nameVi" in authentic Vietnamese with full diacritics regardless of language. Keep "imagePrompt" in English (for the image model).`;
@@ -98,7 +106,7 @@ export const generateMealPlan = createServerFn({ method: "POST" })
         : data.difficulty === "medium"
           ? `\n\nCOOKING DIFFICULTY: Medium — around 30-45 minutes, moderate cooking skills, more techniques. Set every dish "difficulty" field to "Medium".`
           : `\n\nCOOKING DIFFICULTY: Easy — beginner friendly, simple recipes, around 20-30 minutes, suitable for kids and teenagers learning to cook. Set every dish "difficulty" field to "Easy".`;
-    const prompt = `Ingredients available in the fridge/pantry:\n${data.ingredients}${gardenBlock}${profileBlock}${langBlock}${difficultyBlock}\n\nPlan tonight's family dinner. Return JSON only.`;
+    const prompt = `${ingredientsBlock}${gardenBlock}${profileBlock}${inspirationBlock}${langBlock}${difficultyBlock}\n\nPlan tonight's family dinner. Return JSON only.`;
 
     const nfc = (s: string) => s.normalize("NFC");
     const normalizeDish = (d: Dish): Dish => ({
