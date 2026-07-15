@@ -76,6 +76,8 @@ function Landing() {
   const resultRef = useRef<HTMLDivElement | null>(null);
   const [language, setLanguage] = useState<RecipeLang>("en");
   const [difficulty, setDifficulty] = useState<Difficulty>("easy");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
 
   // Load saved preferences
   useEffect(() => {
