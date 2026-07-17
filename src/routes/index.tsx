@@ -443,7 +443,6 @@ function Landing() {
               <p className="text-xs text-muted-foreground">
                 Take a photo or upload an existing picture of your garden. AI will identify your vegetables and automatically add them to your available ingredients.
               </p>
-            </div>
               {scanMsg && !scanning && (
                 <div className="flex w-full flex-wrap items-center gap-2">
                   <span className="text-xs text-muted-foreground">{scanMsg}</span>
@@ -482,7 +481,6 @@ function Landing() {
                   </button>
                 </div>
               )}
-
             </div>
           </div>
 
