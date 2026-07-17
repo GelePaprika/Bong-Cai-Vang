@@ -419,26 +419,33 @@ function Landing() {
                 <input
                   ref={fileInputRef}
                   type="file"
-                  accept="image/*"
-                  className="hidden"
+                  accept="image/png,image/jpeg,image/jpg,image/webp,image/heic,image/heif"
+                  className="sr-only"
                   onChange={(e) => {
                     const f = e.target.files?.[0];
                     if (f) handleScanFile(f);
                     e.target.value = "";
                   }}
                 />
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={scanning}
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--basil)]/40 bg-background px-3 py-1.5 text-xs font-semibold text-[color:var(--basil)] hover:bg-[color:var(--basil)]/10 disabled:opacity-60"
+                <label
+                  htmlFor={fileInputRef.current?.id || undefined}
+                  onClick={(e) => {
+                    if (scanning) {
+                      e.preventDefault();
+                      return;
+                    }
+                    e.preventDefault();
+                    fileInputRef.current?.click();
+                  }}
+                  aria-disabled={scanning}
+                  className="inline-flex cursor-pointer items-center gap-1.5 rounded-full border border-[color:var(--basil)]/40 bg-background px-3 py-1.5 text-xs font-semibold text-[color:var(--basil)] hover:bg-[color:var(--basil)]/10 aria-disabled:opacity-60"
                 >
                   {scanning ? (
                     <><RefreshCw className="h-3.5 w-3.5 animate-spin" /> Scanning garden…</>
                   ) : (
                     <><Camera className="h-3.5 w-3.5" /> 📷 Scan my garden</>
                   )}
-                </button>
+                </label>
               </div>
               <p className="text-xs text-muted-foreground">
                 Show us what's growing in your garden! 
