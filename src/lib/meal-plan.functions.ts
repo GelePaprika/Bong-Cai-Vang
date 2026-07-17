@@ -90,10 +90,8 @@ export const generateMealPlan = createServerFn({ method: "POST" })
       .parse(d),
   )
   .handler(async ({ data }) => {
-    const key = process.env.LOVABLE_API_KEY;
-    if (!key) throw new Error("Missing LOVABLE_API_KEY");
-    const gateway = createLovableAiGatewayProvider(key);
-    const model = gateway("google/gemini-3-flash-preview");
+    const gateway = createLovableAiGatewayProvider();
+    const model = gateway("gpt-4o-mini");
 
     const hasIngredients = data.ingredients.trim().length > 0;
     const hasGarden = data.garden.trim().length > 0;
