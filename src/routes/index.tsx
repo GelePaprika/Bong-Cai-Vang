@@ -414,31 +414,36 @@ function Landing() {
               placeholder={"Pak choi\nMorning glory\nVietnamese basil\nMint, spring onion"}
               className="w-full resize-y rounded-xl border border-[color:var(--basil)]/30 bg-background p-3 font-mono text-sm leading-relaxed shadow-inner outline-none transition placeholder:text-muted-foreground/60 focus:border-[color:var(--basil)] focus:ring-2 focus:ring-[color:var(--basil)]/30"
             />
-            <div className="mt-3 flex flex-wrap items-center gap-2">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                capture="environment"
-                className="hidden"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) handleScanFile(f);
-                  e.target.value = "";
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => fileInputRef.current?.click()}
-                disabled={scanning}
-                className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--basil)]/40 bg-background px-3 py-1.5 text-xs font-semibold text-[color:var(--basil)] hover:bg-[color:var(--basil)]/10 disabled:opacity-60"
-              >
-                {scanning ? (
-                  <><RefreshCw className="h-3.5 w-3.5 animate-spin" /> Scanning garden…</>
-                ) : (
-                  <><Camera className="h-3.5 w-3.5" /> 📷 Harvest my garden today</>
-                )}
-              </button>
+            <div className="mt-3 flex flex-col gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleScanFile(f);
+                    e.target.value = "";
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={scanning}
+                  className="inline-flex items-center gap-1.5 rounded-full border border-[color:var(--basil)]/40 bg-background px-3 py-1.5 text-xs font-semibold text-[color:var(--basil)] hover:bg-[color:var(--basil)]/10 disabled:opacity-60"
+                >
+                  {scanning ? (
+                    <><RefreshCw className="h-3.5 w-3.5 animate-spin" /> Scanning garden…</>
+                  ) : (
+                    <><Camera className="h-3.5 w-3.5" /> 📷 Scan my garden</>
+                  )}
+                </button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Take a photo or upload an existing picture of your garden. AI will identify your vegetables and automatically add them to your available ingredients.
+              </p>
+            </div>
               {scanMsg && !scanning && (
                 <div className="flex w-full flex-wrap items-center gap-2">
                   <span className="text-xs text-muted-foreground">{scanMsg}</span>
