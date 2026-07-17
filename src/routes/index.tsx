@@ -441,7 +441,8 @@ function Landing() {
                 </button>
               </div>
               <p className="text-xs text-muted-foreground">
-                Take a photo or upload an existing picture of your garden. AI will identify your vegetables and automatically add them to your available ingredients.
+                Show us what's growing in your garden! 
+                🌱 Take or upload a photo, and we'll add your freshly picked vegetables to your ingredient list.
               </p>
               {scanMsg && !scanning && (
                 <div className="flex w-full flex-wrap items-center gap-2">
