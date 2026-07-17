@@ -45,8 +45,23 @@ If the LOVABLE_API_KEY is not accessible to users, please refactor the project s
 Refactor complete. The project now uses standard OpenAI (OPENAI_API_KEY) instead of LOVABLE_API_KEY:
 
 src/lib/ai-gateway.server.ts now returns a plain @ai-sdk/openai provider (with optional OPENAI_BASE_URL for compatible gateways).
-Meal plan, weekly plan, garden vision, translate-shopping, and chat all use gpt-4o-mini.
-The meal-image streaming endpoint now calls OpenAI's gpt-image-1 directly with the same SSE format the client expects.
-LOCAL_SETUP.md rewritten with the new env vars and setup steps.
-OPENAI_API_KEY is stored as a secret so the hosted preview keeps working.
-Clone → npm install → set OPENAI_API_KEY + Supabase vars in .env → npm run dev, and every feature works with no Lovable-specific dependency.
+
+# Prompt 3:
+
+Current behavior
+The application loads normally.
+Clicking Suggest Dinner returns:
+"Something went wrong while preparing your meal. Please try again."
+Please verify:
+Check the server logs for the actual error and identify the root cause.
+Verify that OPENAI_API_KEY is correctly configured in the hosted Lovable environment.
+Verify that all AI server functions (meal plan, weekly plan, garden vision, shopping translation, chat, image generation) are using the new OpenAI provider consistently.
+Check whether any code still references LOVABLE_API_KEY or the previous AI Gateway.
+Confirm that the OpenAI SDK requests are succeeding and that the response is parsed correctly.
+If the migration introduced any regression, fix it while preserving compatibility with local development.
+
+Please provide:
+
+the actual root cause,
+the fix you implemented,
+and confirmation that meal generation works again in both the hosted preview and a local environment.
