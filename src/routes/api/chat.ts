@@ -50,8 +50,8 @@ export const Route = createFileRoute("/api/chat")({
           return new Response("Messages required", { status: 400 });
         }
 
-        const key = process.env.LOVABLE_API_KEY;
-        if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+        const key = process.env.OPENAI_API_KEY;
+        if (!key) return new Response("Missing OPENAI_API_KEY", { status: 500 });
 
         const authHeader = request.headers.get("authorization");
         const threadId = body.threadId;
@@ -97,7 +97,7 @@ export const Route = createFileRoute("/api/chat")({
         }
 
         const gateway = createLovableAiGatewayProvider(key);
-        const model = gateway("google/gemini-3-flash-preview");
+        const model = gateway("gpt-4o-mini");
 
         const result = streamText({
           model,

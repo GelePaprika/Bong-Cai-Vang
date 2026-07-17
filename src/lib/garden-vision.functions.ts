@@ -22,10 +22,8 @@ export const scanGarden = createServerFn({ method: "POST" })
     z.object({ imageDataUrl: z.string().min(20) }).parse(d),
   )
   .handler(async ({ data }) => {
-    const key = process.env.LOVABLE_API_KEY;
-    if (!key) throw new Error("Missing LOVABLE_API_KEY");
-    const gateway = createLovableAiGatewayProvider(key);
-    const model = gateway("google/gemini-2.5-flash");
+    const gateway = createLovableAiGatewayProvider();
+    const model = gateway("gpt-4o-mini");
 
     try {
       const { object } = await generateObject({

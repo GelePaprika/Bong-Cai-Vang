@@ -7,19 +7,20 @@ export const Route = createFileRoute("/api/generate-meal-image")({
         const { prompt } = (await request.json()) as { prompt?: string };
         if (!prompt) return new Response("prompt required", { status: 400 });
 
-        const key = process.env.LOVABLE_API_KEY;
-        if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+        const key = process.env.OPENAI_API_KEY;
+        if (!key) return new Response("Missing OPENAI_API_KEY", { status: 500 });
 
-        const upstream = await fetch("https://ai.gateway.lovable.dev/v1/images/generations", {
+        const baseUrl = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
+
+        const upstream = await fetch(`${baseUrl}/images/generations`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${key}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            model: "openai/gpt-image-2",
+            model: "gpt-image-1",
             prompt: `${prompt}. Warm, appetizing food photography, natural daylight, shallow depth of field, styled on a wooden family dinner table.`,
-            quality: "low",
             size: "1024x1024",
             stream: true,
             partial_images: 1,
