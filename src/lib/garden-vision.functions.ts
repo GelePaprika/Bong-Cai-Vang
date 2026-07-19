@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { generateObject, NoObjectGeneratedError } from "ai";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createLovableAiGatewayProvider, getOpenAiFriendlyError } from "@/lib/ai-gateway.server";
 
 const ResultSchema = z.object({
   ingredients: z.array(z.string()),
@@ -42,6 +42,9 @@ export const scanGarden = createServerFn({ method: "POST" })
       });
       return object;
     } catch (error) {
+      const friendlyError = getOpenAiFriendlyError(error);
+      if (friendlyError) throw new Error(friendlyError);
+
       if (NoObjectGeneratedError.isInstance(error)) {
         const txt = error.text ?? "";
         const start = txt.indexOf("{");

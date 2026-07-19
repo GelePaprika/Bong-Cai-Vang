@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { getOpenAiFriendlyError } from "@/lib/ai-gateway.server";
 
 export const Route = createFileRoute("/api/generate-meal-image")({
   server: {
@@ -29,7 +30,8 @@ export const Route = createFileRoute("/api/generate-meal-image")({
 
         if (!upstream.ok || !upstream.body) {
           const text = await upstream.text().catch(() => "");
-          return new Response(text || "Image generation failed", { status: upstream.status });
+          const friendlyError = getOpenAiFriendlyError({ status: upstream.status, responseBody: text });
+          return new Response(friendlyError || "Image generation failed", { status: upstream.status });
         }
 
         return new Response(upstream.body, {
