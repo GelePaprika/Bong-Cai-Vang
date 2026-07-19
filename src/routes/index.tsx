@@ -571,7 +571,7 @@ function Landing() {
       >
         {error && (
           <div className="flex flex-col gap-3 rounded-2xl border border-destructive/30 bg-destructive/10 p-6 text-sm text-destructive sm:flex-row sm:items-center sm:justify-between">
-            <span>🍲 Something went wrong while preparing your meal. Please try again.</span>
+            <span>🍲 {error}</span>
             <button
               type="button"
               onClick={handleSuggest}
