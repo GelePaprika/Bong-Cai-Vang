@@ -21,24 +21,27 @@ export function getOpenAIKey(): string {
 }
 
 export function getOpenAiFriendlyError(error: unknown): string | null {
-  const record = error && typeof error === "object" ? (error as Record<string, unknown>) : {};
-  const statusCode =
-    typeof record.statusCode === "number"
-      ? record.statusCode
-      : typeof record.status === "number"
-        ? record.status
-        : undefined;
-  const messageParts = [
-    record.message,
-    record.responseBody,
-    record.responseText,
-    record.body,
-    record.cause && typeof record.cause === "object"
-      ? (record.cause as Record<string, unknown>).message
-      : undefined,
-  ]
-    .filter((part): part is string => typeof part === "string")
-    .join("\n");
+  const seen = new Set<unknown>();
+  const collect = (value: unknown): { statusCode?: number; text: string } => {
+    if (!value || typeof value !== "object" || seen.has(value)) return { text: "" };
+    seen.add(value);
+
+    const record = value as Record<string, unknown>;
+    const nested = collect(record.cause);
+    const statusCode =
+      typeof record.statusCode === "number"
+        ? record.statusCode
+        : typeof record.status === "number"
+          ? record.status
+          : nested.statusCode;
+    const ownText = [record.message, record.responseBody, record.responseText, record.body]
+      .filter((part): part is string => typeof part === "string")
+      .join("\n");
+
+    return { statusCode, text: `${ownText}\n${nested.text}` };
+  };
+
+  const { statusCode, text: messageParts } = collect(error);
   const text = messageParts.toLowerCase();
 
   if (text.includes("missing openai_api_key")) {
