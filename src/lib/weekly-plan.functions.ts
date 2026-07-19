@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { generateObject, NoObjectGeneratedError } from "ai";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createLovableAiGatewayProvider, getOpenAiFriendlyError } from "@/lib/ai-gateway.server";
 
 const DayDishSchema = z.object({
   day: z.string(),
@@ -121,12 +121,24 @@ export const generateWeeklyPlan = createServerFn({ method: "POST" })
       });
       return normalize(object as WeeklyPlan);
     } catch (error) {
+      const friendlyError = getOpenAiFriendlyError(error);
+      if (friendlyError) throw new Error(friendlyError);
+
       if (NoObjectGeneratedError.isInstance(error)) {
         const parsed = tryParse(error.text ?? "");
         if (parsed) return normalize(parsed);
       }
       const { generateText } = await import("ai");
-      const { text } = await generateText({ model, system: SYSTEM, prompt });
+      let text = "";
+      try {
+        const result = await generateText({ model, system: SYSTEM, prompt });
+        text = result.text;
+      } catch (fallbackError) {
+        throw new Error(
+          getOpenAiFriendlyError(fallbackError) ??
+            "The chef couldn't put together a weekly plan this time. Try again with a slightly different list.",
+        );
+      }
       const parsed = tryParse(text);
       if (parsed) return normalize(parsed);
       throw new Error(

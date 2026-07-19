@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { getOpenAiFriendlyError } from "@/lib/ai-gateway.server";
 
 export const Route = createFileRoute("/api/generate-meal-image")({
   server: {
@@ -8,7 +9,12 @@ export const Route = createFileRoute("/api/generate-meal-image")({
         if (!prompt) return new Response("prompt required", { status: 400 });
 
         const key = process.env.OPENAI_API_KEY;
-        if (!key) return new Response("Missing OPENAI_API_KEY", { status: 500 });
+        if (!key) {
+          return new Response(
+            "Bông Cải Vàng needs a saved OpenAI API key before it can create meal photos.",
+            { status: 500 },
+          );
+        }
 
         const baseUrl = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
 
@@ -29,7 +35,8 @@ export const Route = createFileRoute("/api/generate-meal-image")({
 
         if (!upstream.ok || !upstream.body) {
           const text = await upstream.text().catch(() => "");
-          return new Response(text || "Image generation failed", { status: upstream.status });
+          const friendlyError = getOpenAiFriendlyError({ status: upstream.status, responseBody: text });
+          return new Response(friendlyError || "Image generation failed", { status: upstream.status });
         }
 
         return new Response(upstream.body, {

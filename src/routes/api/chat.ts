@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { createLovableAiGatewayProvider, getOpenAiFriendlyError } from "@/lib/ai-gateway.server";
 import { convertToModelMessages, streamText, tool, stepCountIs, type UIMessage } from "ai";
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
@@ -51,7 +51,12 @@ export const Route = createFileRoute("/api/chat")({
         }
 
         const key = process.env.OPENAI_API_KEY;
-        if (!key) return new Response("Missing OPENAI_API_KEY", { status: 500 });
+        if (!key) {
+          return new Response(
+            "Bông Cải Vàng needs a saved OpenAI API key before it can answer from the kitchen.",
+            { status: 500 },
+          );
+        }
 
         const authHeader = request.headers.get("authorization");
         const threadId = body.threadId;
@@ -140,6 +145,9 @@ export const Route = createFileRoute("/api/chat")({
 
         return result.toUIMessageStreamResponse({
           originalMessages: body.messages,
+          onError: (error) =>
+            getOpenAiFriendlyError(error) ??
+            "Bông Cải Vàng couldn't answer from the kitchen right now. Please try again in a moment.",
           onFinish: async ({ responseMessage }) => {
             if (!supabase || !userId || !threadId) return;
             await supabase.from("messages").insert({
