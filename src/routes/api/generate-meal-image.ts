@@ -9,7 +9,12 @@ export const Route = createFileRoute("/api/generate-meal-image")({
         if (!prompt) return new Response("prompt required", { status: 400 });
 
         const key = process.env.OPENAI_API_KEY;
-        if (!key) return new Response("Missing OPENAI_API_KEY", { status: 500 });
+        if (!key) {
+          return new Response(
+            "Bông Cải Vàng needs a saved OpenAI API key before it can create meal photos.",
+            { status: 500 },
+          );
+        }
 
         const baseUrl = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
 

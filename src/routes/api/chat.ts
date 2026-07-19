@@ -51,7 +51,12 @@ export const Route = createFileRoute("/api/chat")({
         }
 
         const key = process.env.OPENAI_API_KEY;
-        if (!key) return new Response("Missing OPENAI_API_KEY", { status: 500 });
+        if (!key) {
+          return new Response(
+            "Bông Cải Vàng needs a saved OpenAI API key before it can answer from the kitchen.",
+            { status: 500 },
+          );
+        }
 
         const authHeader = request.headers.get("authorization");
         const threadId = body.threadId;
