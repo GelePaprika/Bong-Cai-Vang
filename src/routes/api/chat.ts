@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createLovableAiGatewayProvider, getOpenAiFriendlyError } from "@/lib/ai-gateway.server";
+import { getChatModel, getOpenAiFriendlyError } from "@/lib/ai-gateway.server";
 import { convertToModelMessages, streamText, tool, stepCountIs, type UIMessage } from "ai";
 import { z } from "zod";
 import { createClient } from "@supabase/supabase-js";
@@ -50,10 +50,10 @@ export const Route = createFileRoute("/api/chat")({
           return new Response("Messages required", { status: 400 });
         }
 
-        const key = process.env.OPENAI_API_KEY;
+        const key = process.env.LOVABLE_API_KEY;
         if (!key) {
           return new Response(
-            "Bông Cải Vàng needs a saved OpenAI API key before it can answer from the kitchen.",
+            "Bông Cải Vàng's kitchen needs Lovable AI to be enabled before it can answer.",
             { status: 500 },
           );
         }
@@ -101,8 +101,7 @@ export const Route = createFileRoute("/api/chat")({
           }
         }
 
-        const gateway = createLovableAiGatewayProvider(key);
-        const model = gateway("gpt-4o-mini");
+        const model = getChatModel("chat");
 
         const result = streamText({
           model,
