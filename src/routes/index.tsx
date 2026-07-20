@@ -556,7 +556,7 @@ function Landing() {
                   <RefreshCw className="h-4 w-4 animate-spin" /> Cooking up ideas…
                 </>
               ) : (
-                <>🍲 Suggest Dinner</>
+                <>🍲 Suggest Vietnamese Dinner</>
               )}
             </button>
           </div>
