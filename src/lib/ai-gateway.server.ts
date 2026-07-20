@@ -27,7 +27,7 @@ const AI_MODELS = {
   },
 } as const;
 
-function getProviderConfig() {
+function getProviderConfig(): { apiKey: string; baseURL: string; headers: Record<string, string> } {
   if (AI_PROVIDER === "lovable") {
     const apiKey = process.env.LOVABLE_API_KEY;
     if (!apiKey) throw new Error("Missing LOVABLE_API_KEY");
