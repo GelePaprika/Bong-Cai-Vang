@@ -93,13 +93,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, viewport-fit=cover" },
       { title: "Bông Cải Vàng — AI family meal planner" },
       {
         name: "description",
         content:
           "Warm AI dinner planner for busy Vietnamese-Dutch families. Turn what's in your fridge into delicious weekly menus with a smart grocery list.",
       },
+      { name: "theme-color", content: "#f2c14e" },
+      { name: "application-name", content: "Bông Cải Vàng" },
+      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "apple-mobile-web-app-status-bar-style", content: "default" },
+      { name: "apple-mobile-web-app-title", content: "Bông Cải Vàng" },
+      { name: "mobile-web-app-capable", content: "yes" },
       { property: "og:title", content: "Bông Cải Vàng — AI family meal planner" },
       {
         property: "og:description",
@@ -111,7 +117,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", href: "/favicon.png", type: "image/png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png", sizes: "180x180" },
+      { rel: "manifest", href: "/manifest.webmanifest" },
     ],
   }),
   notFoundComponent: NotFoundComponent,
