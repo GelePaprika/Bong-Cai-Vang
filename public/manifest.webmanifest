@@ -1,0 +1,19 @@
+{
+  "name": "Bông Cải Vàng",
+  "short_name": "Bông Cải Vàng",
+  "description": "Warm AI dinner planner for busy Vietnamese-Dutch families. Turn what's in your fridge into delicious weekly menus with a smart grocery list.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fdf7e4",
+  "theme_color": "#f2c14e",
+  "lang": "en",
+  "categories": ["food", "lifestyle", "productivity"],
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
