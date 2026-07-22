@@ -6,12 +6,21 @@ import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" ? s.next : "",
+  }),
   component: AuthPage,
 });
+
+function isSafeNext(next: string): boolean {
+  return next.startsWith("/") && !next.startsWith("//");
+}
 
 function AuthPage() {
   const navigate = useNavigate();
   const router = useRouter();
+  const { next } = Route.useSearch();
+  const returnTo = isSafeNext(next) ? next : "/chat";
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
