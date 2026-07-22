@@ -28,7 +28,7 @@ export default defineTool({
     let q = supabase
       .from("recipes")
       .select("id, title, name_vi, cuisine, difficulty, tags, cooking_time, created_at")
-      .eq("user_id", ctx.getUserId())
+      .eq("user_id", ctx.getUserId()!)
       .order("created_at", { ascending: false })
       .limit(limit ?? 20);
     if (query) {
