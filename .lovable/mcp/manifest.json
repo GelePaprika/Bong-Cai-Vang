@@ -1,0 +1,125 @@
+{
+  "version": 1,
+  "sdk_version": "0.24.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://rookitknvhwgsvzbbvfc.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "bong-cai-vang-mcp",
+      "version": "0.1.0",
+      "title": "Bông Cải Vàng"
+    },
+    "tools": [
+      {
+        "name": "list_threads",
+        "title": "List meal plan chats",
+        "description": "List the signed-in user's Bông Cải Vàng meal plan chat threads, most recently updated first.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "description": "Max threads to return (default 20)"
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_thread_messages",
+        "title": "Get meal plan chat messages",
+        "description": "Read the messages of one of the signed-in user's Bông Cải Vàng meal plan chat threads.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "threadId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "The thread id from list_threads"
+            }
+          },
+          "required": [
+            "threadId"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_recipes",
+        "title": "List saved recipes",
+        "description": "Search the signed-in user's saved Bông Cải Vàng recipes. Optional query filters by title or Vietnamese name.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Optional search string matched against title/name_vi"
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "description": "Max recipes (default 20)"
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_recipe",
+        "title": "Get one saved recipe",
+        "description": "Fetch a full saved Bông Cải Vàng recipe (ingredients, instructions, shopping list, image) by id.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "recipeId": {
+              "type": "string",
+              "format": "uuid",
+              "description": "The recipe id from list_recipes"
+            }
+          },
+          "required": [
+            "recipeId"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}
