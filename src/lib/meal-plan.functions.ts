@@ -152,6 +152,15 @@ export const generateMealPlan = createServerFn({ method: "POST" })
       }
     };
 
+    const persistPlan = async (plan: MealPlan) => {
+      try {
+        const { saveMealPlan } = await import("@/lib/recipes.server");
+        await saveMealPlan(plan, { language: data.language });
+      } catch (err) {
+        console.error("[recipes] Failed to persist meal plan", err);
+      }
+    };
+
     try {
       const { object } = await generateObject({
         model,
@@ -159,14 +168,20 @@ export const generateMealPlan = createServerFn({ method: "POST" })
         prompt,
         schema: PlanSchema,
       });
-      return normalizePlan(object as MealPlan);
+      const plan = normalizePlan(object as MealPlan);
+      await persistPlan(plan);
+      return plan;
     } catch (error) {
       const friendlyError = getOpenAiFriendlyError(error);
       if (friendlyError) throw new Error(friendlyError);
 
       if (NoObjectGeneratedError.isInstance(error)) {
         const parsed = tryParse(error.text ?? "");
-        if (parsed) return normalizePlan(parsed);
+        if (parsed) {
+          const plan = normalizePlan(parsed);
+          await persistPlan(plan);
+          return plan;
+        }
       }
       // Fallback: plain text generation, then extract JSON
       const { generateText } = await import("ai");
@@ -185,10 +200,15 @@ export const generateMealPlan = createServerFn({ method: "POST" })
         );
       }
       const parsed = tryParse(text);
-      if (parsed) return normalizePlan(parsed);
+      if (parsed) {
+        const plan = normalizePlan(parsed);
+        await persistPlan(plan);
+        return plan;
+      }
       throw new Error(
         "The chef couldn't put together a plan this time. Try again with a slightly different ingredient list.",
       );
     }
   });
+
 
