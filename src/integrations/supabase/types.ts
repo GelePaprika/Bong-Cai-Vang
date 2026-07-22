@@ -49,6 +49,75 @@ export type Database = {
           },
         ]
       }
+      recipes: {
+        Row: {
+          ai_model: string | null
+          cooking_time: number | null
+          created_at: string
+          cuisine: string | null
+          difficulty: string | null
+          id: string
+          image_url: string | null
+          ingredients: Json
+          instructions: string | null
+          language: string | null
+          name_vi: string | null
+          nutrition: Json
+          preparation_time: number | null
+          recipe_source: string
+          servings: number | null
+          shopping_list: Json
+          tags: Json
+          title: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          ai_model?: string | null
+          cooking_time?: number | null
+          created_at?: string
+          cuisine?: string | null
+          difficulty?: string | null
+          id?: string
+          image_url?: string | null
+          ingredients?: Json
+          instructions?: string | null
+          language?: string | null
+          name_vi?: string | null
+          nutrition?: Json
+          preparation_time?: number | null
+          recipe_source?: string
+          servings?: number | null
+          shopping_list?: Json
+          tags?: Json
+          title: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          ai_model?: string | null
+          cooking_time?: number | null
+          created_at?: string
+          cuisine?: string | null
+          difficulty?: string | null
+          id?: string
+          image_url?: string | null
+          ingredients?: Json
+          instructions?: string | null
+          language?: string | null
+          name_vi?: string | null
+          nutrition?: Json
+          preparation_time?: number | null
+          recipe_source?: string
+          servings?: number | null
+          shopping_list?: Json
+          tags?: Json
+          title?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       threads: {
         Row: {
           created_at: string
