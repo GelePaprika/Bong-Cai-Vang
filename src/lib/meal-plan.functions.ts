@@ -140,6 +140,13 @@ export const generateMealPlan = createServerFn({ method: "POST" })
       nameEn: nfc(d.nameEn),
       steps: d.steps.map(nfc),
       imagePrompt: nfc(d.imagePrompt),
+      ingredients: (d.ingredients ?? []).map((it) => ({
+        ...it,
+        name: nfc(it.name),
+        quantity: it.quantity ? nfc(it.quantity) : it.quantity,
+        unit: it.unit ? nfc(it.unit) : it.unit,
+        note: it.note ? nfc(it.note) : it.note,
+      })),
     });
     const normalizePlan = (p: MealPlan): MealPlan => ({
       recommended: normalizeDish(p.recommended),
