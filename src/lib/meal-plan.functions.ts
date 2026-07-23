@@ -73,8 +73,15 @@ For every dish:
 - cookingTimeMinutes: realistic integer.
 - difficulty: Easy | Medium | Hard.
 - healthy: true if it's vegetable-forward, low salt/sugar, light on frying.
+- ingredients: the FULL list of every ingredient needed to cook the dish for 5 people. Each entry has "name" (localized to the output language, but keep signature Vietnamese items like "nước mắm", "sả", "riềng" in Vietnamese), "quantity" (number as a string, e.g. "500", "2", "1/2"), "unit" (e.g. "g", "ml", "tbsp", "clove", "bunch", "piece") whenever possible, and an optional "note" (e.g. "finely minced"). Include pantry basics that are actually used (rice, salt, sugar, cooking oil, fish sauce). Do NOT omit ingredients that appear in the steps.
 - steps: 4-6 short imperative lines, no long paragraphs.
 - imagePrompt: vivid ENGLISH food-photography prompt of the finished plated dish, top-down or 3/4, natural light, wooden table.
+
+SHOPPING LIST RULES
+- The shopping list is derived FROM the recommended dish's "ingredients" list.
+- Include ONLY items the user does NOT already have in the fridge/pantry/garden (i.e. missing ingredients). Rice is always in the pantry — never add rice to the shopping list.
+- Group by category (Vegetables, Protein, Pantry, Herbs & spices, etc.).
+- Keep it minimal and honest.
 
 Be concise. Do not invent ingredients not in the fridge unless they go on the shopping list.
 
@@ -84,7 +91,7 @@ Respond with ONLY valid minified JSON, no markdown, no code fences, no commentar
   "alternatives": [Dish, Dish, Dish],
   "shoppingList": [{ "name": string, "quantity"?: string, "category": string }]
 }
-where Dish = { "nameVi": string, "nameEn": string, "cookingTimeMinutes": number, "difficulty": "Easy"|"Medium"|"Hard", "healthy": boolean, "steps": string[], "imagePrompt": string }.`;
+where Dish = { "nameVi": string, "nameEn": string, "cookingTimeMinutes": number, "difficulty": "Easy"|"Medium"|"Hard", "healthy": boolean, "ingredients": [{ "name": string, "quantity"?: string, "unit"?: string, "note"?: string }], "steps": string[], "imagePrompt": string }.`;
 
 
 export const generateMealPlan = createServerFn({ method: "POST" })
