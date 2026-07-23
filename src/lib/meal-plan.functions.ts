@@ -3,12 +3,20 @@ import { z } from "zod";
 import { generateObject, NoObjectGeneratedError } from "ai";
 import { createLovableAiGatewayProvider, getOpenAiFriendlyError } from "@/lib/ai-gateway.server";
 
+const IngredientSchema = z.object({
+  name: z.string(),
+  quantity: z.string().optional(),
+  unit: z.string().optional(),
+  note: z.string().optional(),
+});
+
 const DishSchema = z.object({
   nameVi: z.string(),
   nameEn: z.string(),
   cookingTimeMinutes: z.number(),
   difficulty: z.enum(["Easy", "Medium", "Hard"]),
   healthy: z.boolean(),
+  ingredients: z.array(IngredientSchema),
   steps: z.array(z.string()),
   imagePrompt: z.string(),
 });
@@ -24,6 +32,8 @@ const PlanSchema = z.object({
     }),
   ),
 });
+
+export type Ingredient = z.infer<typeof IngredientSchema>;
 
 export type MealPlan = z.infer<typeof PlanSchema>;
 export type Dish = z.infer<typeof DishSchema>;
@@ -63,8 +73,15 @@ For every dish:
 - cookingTimeMinutes: realistic integer.
 - difficulty: Easy | Medium | Hard.
 - healthy: true if it's vegetable-forward, low salt/sugar, light on frying.
+- ingredients: the FULL list of every ingredient needed to cook the dish for 5 people. Each entry has "name" (localized to the output language, but keep signature Vietnamese items like "nước mắm", "sả", "riềng" in Vietnamese), "quantity" (number as a string, e.g. "500", "2", "1/2"), "unit" (e.g. "g", "ml", "tbsp", "clove", "bunch", "piece") whenever possible, and an optional "note" (e.g. "finely minced"). Include pantry basics that are actually used (rice, salt, sugar, cooking oil, fish sauce). Do NOT omit ingredients that appear in the steps.
 - steps: 4-6 short imperative lines, no long paragraphs.
 - imagePrompt: vivid ENGLISH food-photography prompt of the finished plated dish, top-down or 3/4, natural light, wooden table.
+
+SHOPPING LIST RULES
+- The shopping list is derived FROM the recommended dish's "ingredients" list.
+- Include ONLY items the user does NOT already have in the fridge/pantry/garden (i.e. missing ingredients). Rice is always in the pantry — never add rice to the shopping list.
+- Group by category (Vegetables, Protein, Pantry, Herbs & spices, etc.).
+- Keep it minimal and honest.
 
 Be concise. Do not invent ingredients not in the fridge unless they go on the shopping list.
 
@@ -74,7 +91,7 @@ Respond with ONLY valid minified JSON, no markdown, no code fences, no commentar
   "alternatives": [Dish, Dish, Dish],
   "shoppingList": [{ "name": string, "quantity"?: string, "category": string }]
 }
-where Dish = { "nameVi": string, "nameEn": string, "cookingTimeMinutes": number, "difficulty": "Easy"|"Medium"|"Hard", "healthy": boolean, "steps": string[], "imagePrompt": string }.`;
+where Dish = { "nameVi": string, "nameEn": string, "cookingTimeMinutes": number, "difficulty": "Easy"|"Medium"|"Hard", "healthy": boolean, "ingredients": [{ "name": string, "quantity"?: string, "unit"?: string, "note"?: string }], "steps": string[], "imagePrompt": string }.`;
 
 
 export const generateMealPlan = createServerFn({ method: "POST" })
@@ -123,6 +140,13 @@ export const generateMealPlan = createServerFn({ method: "POST" })
       nameEn: nfc(d.nameEn),
       steps: d.steps.map(nfc),
       imagePrompt: nfc(d.imagePrompt),
+      ingredients: (d.ingredients ?? []).map((it) => ({
+        ...it,
+        name: nfc(it.name),
+        quantity: it.quantity ? nfc(it.quantity) : it.quantity,
+        unit: it.unit ? nfc(it.unit) : it.unit,
+        note: it.note ? nfc(it.note) : it.note,
+      })),
     });
     const normalizePlan = (p: MealPlan): MealPlan => ({
       recommended: normalizeDish(p.recommended),

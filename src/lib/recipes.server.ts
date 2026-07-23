@@ -155,7 +155,7 @@ export async function saveDishAsRecipe(
     title: dish.nameEn,
     name_vi: dish.nameVi,
     cuisine,
-    ingredients: [],
+    ingredients: (dish.ingredients ?? []) as unknown as never,
     instructions: dish.steps.join("\n"),
     shopping_list: shoppingList,
     preparation_time: null,
