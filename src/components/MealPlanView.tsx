@@ -39,6 +39,8 @@ export function MealPlanView({
       />
 
 
+      <IngredientsSection dish={featured} />
+
       <section className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <RecipeSteps dish={featured} />
         <ShoppingListCard items={plan.shoppingList} />
