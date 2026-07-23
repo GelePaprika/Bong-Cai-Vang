@@ -175,6 +175,34 @@ function RecommendedSection({
     </section>
   );
 }
+function IngredientsSection({ dish }: { dish: Dish }) {
+  const items = dish.ingredients ?? [];
+  if (!items.length) return null;
+  return (
+    <section className="rounded-3xl border border-border bg-card p-6 shadow-sm md:p-8">
+      <div className="mb-4 flex items-center gap-2">
+        <span className="text-2xl">🧺</span>
+        <h2 className="font-serif text-2xl">Ingredients</h2>
+        <span className="ml-auto text-xs text-muted-foreground">for 5 people</span>
+      </div>
+      <ul className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
+        {items.map((it, i) => {
+          const qty = [it.quantity, it.unit].filter(Boolean).join(" ").trim();
+          return (
+            <li key={i} className="flex items-baseline gap-2 border-b border-dashed border-border/60 py-1.5 text-sm">
+              <span className="font-medium text-foreground">{it.name}</span>
+              {it.note && (
+                <span className="text-xs italic text-muted-foreground">({it.note})</span>
+              )}
+              {qty && <span className="ml-auto whitespace-nowrap text-muted-foreground">{qty}</span>}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
 
 
 function RecipeSteps({ dish }: { dish: Dish }) {
