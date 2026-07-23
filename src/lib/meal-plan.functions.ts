@@ -3,12 +3,20 @@ import { z } from "zod";
 import { generateObject, NoObjectGeneratedError } from "ai";
 import { createLovableAiGatewayProvider, getOpenAiFriendlyError } from "@/lib/ai-gateway.server";
 
+const IngredientSchema = z.object({
+  name: z.string(),
+  quantity: z.string().optional(),
+  unit: z.string().optional(),
+  note: z.string().optional(),
+});
+
 const DishSchema = z.object({
   nameVi: z.string(),
   nameEn: z.string(),
   cookingTimeMinutes: z.number(),
   difficulty: z.enum(["Easy", "Medium", "Hard"]),
   healthy: z.boolean(),
+  ingredients: z.array(IngredientSchema),
   steps: z.array(z.string()),
   imagePrompt: z.string(),
 });
@@ -24,6 +32,8 @@ const PlanSchema = z.object({
     }),
   ),
 });
+
+export type Ingredient = z.infer<typeof IngredientSchema>;
 
 export type MealPlan = z.infer<typeof PlanSchema>;
 export type Dish = z.infer<typeof DishSchema>;
