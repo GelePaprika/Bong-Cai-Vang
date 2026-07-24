@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { MealImage } from "@/components/MealImage";
-import { Clock, Flame, Heart, Leaf, ShoppingBasket, Sparkles } from "lucide-react";
+import { Clock, Flame, Heart, Leaf, Minus, Plus, ShoppingBasket, Sparkles, Users } from "lucide-react";
 import { toast } from "sonner";
 import type { Dish, MealPlan } from "@/lib/meal-plan.functions";
 import { useFavorites } from "@/lib/favorites";
+import { BASE_FAMILY_SIZE, scaleIngredients, scaleShoppingList } from "@/lib/scale-ingredients";
+
 
 
 export function MealPlanView({
