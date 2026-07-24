@@ -20,9 +20,23 @@ export function MealPlanView({
   garden?: string;
 }) {
   const [activeIdx, setActiveIdx] = useState<number>(-1); // -1 = recommended
+  const [familySize, setFamilySize] = useState<number>(BASE_FAMILY_SIZE);
 
-  const featured: Dish =
+  const baseFeatured: Dish =
     activeIdx === -1 ? plan.recommended : plan.alternatives[activeIdx] ?? plan.recommended;
+
+  const featured: Dish = useMemo(
+    () => ({
+      ...baseFeatured,
+      ingredients: scaleIngredients(baseFeatured.ingredients ?? [], familySize),
+    }),
+    [baseFeatured, familySize],
+  );
+
+  const scaledShoppingList = useMemo(
+    () => scaleShoppingList(plan.shoppingList, familySize),
+    [plan.shoppingList, familySize],
+  );
 
   const otherDishes: Array<{ dish: Dish; idx: number }> = [
     { dish: plan.recommended, idx: -1 },
@@ -35,17 +49,18 @@ export function MealPlanView({
         dish={featured}
         promoted={activeIdx !== -1}
         fromGarden={fromGarden}
-        shoppingList={plan.shoppingList}
+        shoppingList={scaledShoppingList}
         ingredientsUsed={ingredientsUsed}
         garden={garden}
       />
 
+      <FamilySizeSelector value={familySize} onChange={setFamilySize} />
 
-      <IngredientsSection dish={featured} />
+      <IngredientsSection dish={featured} familySize={familySize} />
 
       <section className="grid gap-8 lg:grid-cols-[1.4fr_1fr]">
         <RecipeSteps dish={featured} />
-        <ShoppingListCard items={plan.shoppingList} />
+        <ShoppingListCard items={scaledShoppingList} />
       </section>
 
       <section>
@@ -68,6 +83,65 @@ export function MealPlanView({
     </div>
   );
 }
+
+function FamilySizeSelector({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (n: number) => void;
+}) {
+  const dec = () => onChange(Math.max(1, value - 1));
+  const inc = () => onChange(Math.min(10, value + 1));
+  return (
+    <section className="rounded-3xl border border-border bg-card p-4 shadow-sm md:p-5">
+      <div className="flex flex-wrap items-center gap-4">
+        <div className="flex items-center gap-2">
+          <Users className="h-5 w-5 text-[color:var(--chili)]" />
+          <span className="font-serif text-lg">
+            👨‍👩‍👧‍👦 Family Size:{" "}
+            <span className="font-bold">{value}</span>{" "}
+            {value === 1 ? "person" : "people"}
+          </span>
+        </div>
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            type="button"
+            onClick={dec}
+            disabled={value <= 1}
+            aria-label="Decrease family size"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-foreground transition hover:bg-accent disabled:opacity-40"
+          >
+            <Minus className="h-4 w-4" />
+          </button>
+          <input
+            type="range"
+            min={1}
+            max={10}
+            step={1}
+            value={value}
+            onChange={(e) => onChange(parseInt(e.target.value))}
+            className="w-40 accent-[color:var(--chili)]"
+            aria-label="Family size"
+          />
+          <button
+            type="button"
+            onClick={inc}
+            disabled={value >= 10}
+            aria-label="Increase family size"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-foreground transition hover:bg-accent disabled:opacity-40"
+          >
+            <Plus className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+      <p className="mt-2 text-xs text-muted-foreground">
+        Quantities scale instantly — no re-generation needed.
+      </p>
+    </section>
+  );
+}
+
 
 function DifficultyBadge({ level }: { level: Dish["difficulty"] }) {
   const map = {
