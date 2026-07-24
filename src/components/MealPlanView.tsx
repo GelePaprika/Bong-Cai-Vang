@@ -52,9 +52,9 @@ export function MealPlanView({
         shoppingList={scaledShoppingList}
         ingredientsUsed={ingredientsUsed}
         garden={garden}
+        familySize={familySize}
+        onFamilySizeChange={setFamilySize}
       />
-
-      <FamilySizeSelector value={familySize} onChange={setFamilySize} />
 
       <IngredientsSection dish={featured} familySize={familySize} />
 
@@ -94,51 +94,43 @@ function FamilySizeSelector({
   const dec = () => onChange(Math.max(1, value - 1));
   const inc = () => onChange(Math.min(10, value + 1));
   return (
-    <section className="rounded-3xl border border-border bg-card p-4 shadow-sm md:p-5">
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="flex items-center gap-2">
-          <Users className="h-5 w-5 text-[color:var(--chili)]" />
-          <span className="font-serif text-lg">
-            👨‍👩‍👧‍👦 Family Size:{" "}
-            <span className="font-bold">{value}</span>{" "}
-            {value === 1 ? "person" : "people"}
-          </span>
-        </div>
-        <div className="ml-auto flex items-center gap-2">
-          <button
-            type="button"
-            onClick={dec}
-            disabled={value <= 1}
-            aria-label="Decrease family size"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-foreground transition hover:bg-accent disabled:opacity-40"
-          >
-            <Minus className="h-4 w-4" />
-          </button>
-          <input
-            type="range"
-            min={1}
-            max={10}
-            step={1}
-            value={value}
-            onChange={(e) => onChange(parseInt(e.target.value))}
-            className="w-40 accent-[color:var(--chili)]"
-            aria-label="Family size"
-          />
-          <button
-            type="button"
-            onClick={inc}
-            disabled={value >= 10}
-            aria-label="Increase family size"
-            className="flex h-9 w-9 items-center justify-center rounded-full border border-border bg-background text-foreground transition hover:bg-accent disabled:opacity-40"
-          >
-            <Plus className="h-4 w-4" />
-          </button>
-        </div>
+    <div className="mt-4 inline-flex h-10 items-center gap-2 rounded-full border border-border bg-background/60 px-1 backdrop-blur-sm">
+      <div className="flex items-center gap-1.5 pl-3 pr-1">
+        <Users className="h-3.5 w-3.5 text-[color:var(--chili)]" />
+        <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Serves
+        </span>
+        <span className="min-w-[1ch] text-sm font-bold tabular-nums text-foreground">{value}</span>
       </div>
-      <p className="mt-2 text-xs text-muted-foreground">
-        Quantities scale instantly — no re-generation needed.
-      </p>
-    </section>
+      <button
+        type="button"
+        onClick={dec}
+        disabled={value <= 1}
+        aria-label="Decrease family size"
+        className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-accent disabled:opacity-40"
+      >
+        <Minus className="h-3 w-3" />
+      </button>
+      <input
+        type="range"
+        min={1}
+        max={10}
+        step={1}
+        value={value}
+        onChange={(e) => onChange(parseInt(e.target.value))}
+        className="h-1 w-24 accent-[color:var(--chili)]"
+        aria-label="Family size"
+      />
+      <button
+        type="button"
+        onClick={inc}
+        disabled={value >= 10}
+        aria-label="Increase family size"
+        className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-accent disabled:opacity-40"
+      >
+        <Plus className="h-3 w-3" />
+      </button>
+    </div>
   );
 }
 
@@ -183,6 +175,8 @@ function RecommendedSection({
   shoppingList,
   ingredientsUsed,
   garden,
+  familySize,
+  onFamilySizeChange,
 }: {
   dish: Dish;
   promoted: boolean;
@@ -190,6 +184,8 @@ function RecommendedSection({
   shoppingList: MealPlan["shoppingList"];
   ingredientsUsed?: string;
   garden?: string;
+  familySize: number;
+  onFamilySizeChange: (n: number) => void;
 }) {
   const { save, remove, isSaved, favorites } = useFavorites();
   const saved = isSaved(dish);
@@ -246,6 +242,7 @@ function RecommendedSection({
               </span>
             )}
           </div>
+          <FamilySizeSelector value={familySize} onChange={onFamilySizeChange} />
         </div>
       </div>
     </section>
