@@ -251,7 +251,7 @@ function RecommendedSection({
     </section>
   );
 }
-function IngredientsSection({ dish }: { dish: Dish }) {
+function IngredientsSection({ dish, familySize }: { dish: Dish; familySize: number }) {
   const items = dish.ingredients ?? [];
   if (!items.length) return null;
   return (
@@ -259,7 +259,8 @@ function IngredientsSection({ dish }: { dish: Dish }) {
       <div className="mb-4 flex items-center gap-2">
         <span className="text-2xl">🧺</span>
         <h2 className="font-serif text-2xl">Ingredients</h2>
-        <span className="ml-auto text-xs text-muted-foreground">for 5 people</span>
+        <span className="ml-auto text-xs text-muted-foreground">for {familySize} {familySize === 1 ? "person" : "people"}</span>
+
       </div>
       <ul className="grid gap-x-6 gap-y-2 sm:grid-cols-2">
         {items.map((it, i) => {
